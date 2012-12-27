@@ -108,9 +108,21 @@ angular.module('trackr').directive('trackrMarkdownEditor', function () {
 		scope: {
 			markdown: '=trackrMarkdownEditor'
 		},
-		template: '<div>{{markdown}}</div>',
-		link: function (scope, element, attrs) {
-			console.log('link');
-		}
+		templateUrl: 'markdowneditor.html',
+		controller: 'trackr.MarkdownEditor'
 	};
 });
+
+angular.module('trackr').controller('trackr.MarkdownEditor', ['$scope', function(scope) {
+	scope.isPreview = false;
+	scope.html = '';
+
+	scope.editClick = function () {
+		scope.isPreview = false;
+	};
+
+	scope.previewClick = function () {
+		scope.isPreview = true;
+		scope.html = '__' + scope.markdown + '__';
+	};
+}]);
