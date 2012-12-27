@@ -100,3 +100,17 @@ angular.module('trackr').controller('trackr.Item', ['$scope', 'trackr.itemReposi
 		console.log(err); 
 	});
 }]);
+
+angular.module('trackr').directive('trackrMarkdownEditor', function () {
+	return {
+		restrict: 'A',
+		replace: true,
+		scope: {
+			markdown: '=trackrMarkdownEditor'
+		},
+		template: '<div>{{markdown}}</div>',
+		link: function (scope, element, attrs) {
+			console.log('link');
+		}
+	};
+});
