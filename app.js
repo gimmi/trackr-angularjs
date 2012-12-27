@@ -71,6 +71,7 @@ angular.module('trackr').controller('trackr.New', ['$scope', 'trackr.itemReposit
 	scope.title = '';
 	scope.body = '';
 	scope.tags = '';
+	scope.showPreview = false;
 
 	scope.submit = function () {
 		ir.create({ title: scope.title, body: scope.body }).then(function (item) {
@@ -84,8 +85,8 @@ angular.module('trackr').controller('trackr.New', ['$scope', 'trackr.itemReposit
 		scope.htmlPreview = scope.body;
 	};
 
-	scope.editClick = function () { console.log('edit'); };
-	scope.previewClick = function () { console.log('preview'); };
+	scope.editClick = function () { scope.showPreview = false; };
+	scope.previewClick = function () { scope.showPreview = true; };
 }]);
 
 angular.module('trackr').controller('trackr.Item', ['$scope', 'trackr.itemRepository', '$routeParams', function(scope, ir, routeParams) {

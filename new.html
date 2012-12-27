@@ -8,8 +8,9 @@
 				<li class="active"><a href="#" data-toggle="tab" ng-click="editClick()">Edit</a></li>
 				<li><a href="#" data-toggle="tab" ng-click="previewClick()">Preview</a></li>
 			</ul>
-			<textarea class="input-block-level" rows="15" ng-model="body" ng-change="bodyChange()"></textarea>
-			<div ng-bind-html="htmlPreview"></div>
+			<textarea class="input-block-level" rows="15" ng-model="body" ng-change="bodyChange()" ng-hide="showPreview"></textarea>
+			<!-- TODO remove -unsafe when text is interpreted from markdown -->
+			<div ng-bind-html-unsafe="htmlPreview" ng-show="showPreview"></div>
 			<div class="form-actions">
 				<button type="submit" class="btn btn-primary">Save</button>
 			</div>
