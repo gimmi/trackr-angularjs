@@ -71,7 +71,6 @@ angular.module('trackr').controller('trackr.New', ['$scope', 'trackr.itemReposit
 	scope.title = '';
 	scope.body = '';
 	scope.tags = '';
-	scope.showPreview = false;
 
 	scope.submit = function () {
 		ir.create({ title: scope.title, body: scope.body }).then(function (item) {
@@ -80,13 +79,6 @@ angular.module('trackr').controller('trackr.New', ['$scope', 'trackr.itemReposit
 			console.log(err);
 		});
 	};
-
-	scope.bodyChange = function () {
-		scope.htmlPreview = scope.body;
-	};
-
-	scope.editClick = function () { scope.showPreview = false; };
-	scope.previewClick = function () { scope.showPreview = true; };
 }]);
 
 angular.module('trackr').controller('trackr.Item', ['$scope', 'trackr.itemRepository', '$routeParams', function(scope, ir, routeParams) {
@@ -114,15 +106,15 @@ angular.module('trackr').directive('trackrMarkdownEditor', function () {
 });
 
 angular.module('trackr').controller('trackr.MarkdownEditor', ['$scope', function(scope) {
-	scope.isPreview = false;
+	scope.showPreview = false;
 	scope.html = '';
 
 	scope.editClick = function () {
-		scope.isPreview = false;
+		scope.showPreview = false;
 	};
 
 	scope.previewClick = function () {
-		scope.isPreview = true;
-		scope.html = '__' + scope.markdown + '__';
+		scope.showPreview = true;
+		scope.html = "__" + scope.markdown;
 	};
 }]);

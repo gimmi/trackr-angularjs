@@ -3,7 +3,6 @@
 		<li class="active"><a href="#" data-toggle="tab" ng-click="editClick()">Edit</a></li>
 		<li><a href="#" data-toggle="tab" ng-click="previewClick()">Preview</a></li>
 	</ul>
-	<textarea class="input-block-level" rows="15" ng-model="markdown" ng-hide="isPreview"></textarea>
-	<!-- TODO remove -unsafe when text is interpreted from markdown -->
-	<div ng-bind-html-unsafe="html" ng-show="isPreview"></div>
+	<textarea class="input-block-level" rows="15" ng-model="markdown" ng-hide="showPreview"></textarea>
+	<div ng-bind-html-unsafe="html" ng-show="showPreview"></div>
 </div>
