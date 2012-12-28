@@ -1,8 +1,17 @@
-<div>
+<div class="tabbable">
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="#" data-toggle="tab" ng-click="editClick()">Edit</a></li>
-		<li><a href="#" data-toggle="tab" ng-click="previewClick()">Preview</a></li>
+		<li ng-class="{active: !showPreview}">
+			<a href="" ng-click="editClick()" tabindex="-1">Text</a>
+		</li>
+		<li ng-class="{active: showPreview}">
+			<a href="" ng-click="previewClick()" tabindex="-1">Preview</a>
+		</li>
 	</ul>
-	<textarea class="input-block-level" rows="15" ng-model="markdown" ng-hide="showPreview"></textarea>
-	<div ng-bind-html-unsafe="html" ng-show="showPreview"></div>
+	
+
+	<div class="tab-content" ng-hide="showPreview">
+		<textarea class="input-block-level" rows="15" ng-model="markdown"></textarea>
+	</div>
+	<div class="tab-content" ng-bind-html-unsafe="html" ng-show="showPreview"></div>
+
 </div>
