@@ -106,7 +106,7 @@ angular.module('trackr').directive('trackrMarkdownEditor', function () {
 	};
 });
 
-angular.module('trackr').controller('trackr.MarkdownEditor', ['$scope', function (scope) {
+angular.module('trackr').controller('trackr.MarkdownEditor', ['$scope', 'trackr.markdownRenderer', function (scope, markdownRenderer) {
 	scope.showPreview = false;
 	scope.html = '';
 
@@ -116,7 +116,7 @@ angular.module('trackr').controller('trackr.MarkdownEditor', ['$scope', function
 
 	scope.previewClick = function () {
 		scope.showPreview = true;
-		scope.html = "__" + scope.markdown;
+		scope.html = markdownRenderer.toHtml(scope.markdown);
 	};
 }]);
 
@@ -129,3 +129,11 @@ angular.module('trackr').controller('trackr.FlashMessage', ['$scope', '$timeout'
 		timeout(function () { scope.messages.splice(0, 1); }, 5000);
 	});
 }]);
+
+angular.module('trackr').factory('trackr.markdownRenderer', function () {
+	return {
+		toHtml: function (markdown) {
+			return "__" + markdown;
+		}
+	};
+});
