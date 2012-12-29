@@ -20,6 +20,11 @@
 			</ul>
     	</div>
 	</div>
+	<div class="row" ng-controller="trackr.FlashMessage">
+		<div class="offset1 span10">
+			<div class="alert" ng-repeat="message in messages">{{message}}</div>
+		</div>
+	</div>
 </div>
 
 <div class="container" ng-view></div>

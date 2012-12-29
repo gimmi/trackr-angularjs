@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('trackr', []).config(['$routeProvider', function(rp) {
+angular.module('trackr', []).config(['$routeProvider', function (rp) {
 	rp.when('/search', { templateUrl: 'search.html', controller: 'trackr.Search' });
 	rp.when('/new', { templateUrl: 'new.html', controller: 'trackr.New' });
 	rp.when('/item/:id', { templateUrl: 'item.html', controller: 'trackr.Item' });
@@ -8,12 +8,12 @@ angular.module('trackr', []).config(['$routeProvider', function(rp) {
 }]);
 
 angular.module('trackr').factory('trackr.itemRepository', ['$q', function (q) {
-	var count = 4;
-	var items = [
-		{ id: 1, title: 'Title 1', body: 'Body 1' },
-		{ id: 2, title: 'Title 2', body: 'Body 2' },
-		{ id: 3, title: 'Title 3', body: 'Body 3' }
-	];
+	var count = 4,
+		items = [
+			{ id: 1, title: 'Title 1', body: 'Body 1' },
+			{ id: 2, title: 'Title 2', body: 'Body 2' },
+			{ id: 3, title: 'Title 3', body: 'Body 3' }
+		];
 
 	return {
 		find: function (query) {
@@ -33,11 +33,11 @@ angular.module('trackr').factory('trackr.itemRepository', ['$q', function (q) {
 
 		get: function (id) {
 			var i,
-				item = null, 
+				item = null,
 				deferred = q.defer();
 
-			for (i = 0; i < items.length; i++) {
-				if(items[i].id === id) {
+			for (i = 0; i < items.length; i += 1) {
+				if (items[i].id === id) {
 					item = items[i];
 				}
 			}
@@ -53,7 +53,7 @@ angular.module('trackr').factory('trackr.itemRepository', ['$q', function (q) {
 	};
 }]);
 
-angular.module('trackr').controller('trackr.Search', ['$scope', 'trackr.itemRepository', function(scope, ir) {
+angular.module('trackr').controller('trackr.Search', ['$scope', 'trackr.itemRepository', function (scope, ir) {
 	scope.query = '';
 
 	scope.results = [];
@@ -67,13 +67,14 @@ angular.module('trackr').controller('trackr.Search', ['$scope', 'trackr.itemRepo
 	};
 }]);
 
-angular.module('trackr').controller('trackr.New', ['$scope', 'trackr.itemRepository', '$location', function(scope, ir, location) {
+angular.module('trackr').controller('trackr.New', ['$rootScope', '$scope', 'trackr.itemRepository', '$location', function (rootScope, scope, ir, location) {
 	scope.title = '';
 	scope.body = '';
 	scope.tags = '';
 
 	scope.submit = function () {
 		ir.create({ title: scope.title, body: scope.body }).then(function (item) {
+			rootScope.$broadcast('trackr.flashMessage', 'Item created #' + item.id);
 			location.path('/item/' + item.id).replace();
 		}, function (err) {
 			console.log(err);
@@ -81,7 +82,7 @@ angular.module('trackr').controller('trackr.New', ['$scope', 'trackr.itemReposit
 	};
 }]);
 
-angular.module('trackr').controller('trackr.Item', ['$scope', 'trackr.itemRepository', '$routeParams', function(scope, ir, routeParams) {
+angular.module('trackr').controller('trackr.Item', ['$scope', 'trackr.itemRepository', '$routeParams', function (scope, ir, routeParams) {
 	var id = parseInt(routeParams.id, 10);
 
 	ir.get(id).then(function (item) {
@@ -89,7 +90,7 @@ angular.module('trackr').controller('trackr.Item', ['$scope', 'trackr.itemReposi
 		scope.title = item.title;
 		scope.tags = item.tags;
 	}, function (err) {
-		console.log(err); 
+		console.log(err);
 	});
 }]);
 
@@ -105,7 +106,7 @@ angular.module('trackr').directive('trackrMarkdownEditor', function () {
 	};
 });
 
-angular.module('trackr').controller('trackr.MarkdownEditor', ['$scope', function(scope) {
+angular.module('trackr').controller('trackr.MarkdownEditor', ['$scope', function (scope) {
 	scope.showPreview = false;
 	scope.html = '';
 
@@ -117,4 +118,14 @@ angular.module('trackr').controller('trackr.MarkdownEditor', ['$scope', function
 		scope.showPreview = true;
 		scope.html = "__" + scope.markdown;
 	};
+}]);
+
+angular.module('trackr').controller('trackr.FlashMessage', ['$scope', '$timeout', function (scope, timeout) {
+	var timers = {};
+	scope.messages = [];
+
+	scope.$on('trackr.flashMessage', function (event, message) {
+		scope.messages.push(message);
+		timeout(function () { scope.messages.splice(0, 1); }, 5000);
+	});
 }]);
