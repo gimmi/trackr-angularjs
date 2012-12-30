@@ -136,3 +136,11 @@ angular.module('trackr').factory('trackr.markdownRenderer', function () {
 		}
 	};
 });
+
+angular.module('trackr').directive('trackrMarkdownRenderer', function () {
+	return function postLink(scope, element, attrs) {
+		scope.$watch(attrs.trackrMarkdownRenderer, function trackrMarkdownRendererWatchAction(value) {
+			element.html('___' + value);
+		});
+	};
+});
