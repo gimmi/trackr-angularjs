@@ -7,3 +7,8 @@
 		</ul>
 	</div>
 </div>
+<div class="media" ng-repeat="comment in comments">
+	<img class="pull-left media-object" src="http://www.gravatar.com/avatar/9a2d1bc06c719550eb756b8cc32baa37?s=64">
+	<p class="media-heading muted">{{comment.timestamp | date:'short'}}</p>
+	<div class="media-body">{{comment.text}}</div>
+</div>

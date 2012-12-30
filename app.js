@@ -10,9 +10,9 @@ angular.module('trackr', []).config(['$routeProvider', function (rp) {
 angular.module('trackr').factory('trackr.itemRepository', ['$q', function (q) {
 	var count = 4,
 		items = [
-			{ id: 1, title: 'Title 1', body: 'Body 1' },
-			{ id: 2, title: 'Title 2', body: 'Body 2' },
-			{ id: 3, title: 'Title 3', body: 'Body 3' }
+			{ id: 1, title: 'Title 1', body: 'Body 1', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] },
+			{ id: 2, title: 'Title 2', body: 'Body 2', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] },
+			{ id: 3, title: 'Title 3', body: 'Body 3', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] }
 		];
 
 	return {
@@ -89,8 +89,7 @@ angular.module('trackr').controller('trackr.Item', ['$scope', 'trackr.itemReposi
 		scope.id = item.id;
 		scope.title = item.title;
 		scope.tags = item.tags;
-	}, function (err) {
-		console.log(err);
+		scope.comments = item.comments;
 	});
 }]);
 
