@@ -8,11 +8,21 @@ angular.module('trackr', []).config(['$routeProvider', function (rp) {
 }]);
 
 angular.module('trackr').factory('trackr.itemRepository', ['$q', function (q) {
-	var count = 4,
+	var count = 0,
+		createItem = function (data) {
+			count += 1;
+			return {
+				id: count,
+				title: data.title || 'No title',
+				body: data.body || '',
+				tags: data.tags || [],
+				comments: data.comments || []
+			};
+		},
 		items = [
-			{ id: 1, title: 'Title 1', body: 'Body 1', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] },
-			{ id: 2, title: 'Title 2', body: 'Body 2', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] },
-			{ id: 3, title: 'Title 3', body: 'Body 3', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] }
+			createItem({ title: 'Title 1', body: 'Body 1', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] }),
+			createItem({ title: 'Title 2', body: 'Body 2', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] }),
+			createItem({ title: 'Title 3', body: 'Body 3', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] })
 		];
 
 	return {
@@ -24,8 +34,7 @@ angular.module('trackr').factory('trackr.itemRepository', ['$q', function (q) {
 
 		create: function (item) {
 			var deferred = q.defer();
-			item.id = count;
-			count += 1;
+			item = createItem(item);
 			items.push(item);
 			deferred.resolve(item);
 			return deferred.promise;
