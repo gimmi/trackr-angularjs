@@ -49,6 +49,13 @@ angular.module('trackr').factory('trackr.itemRepository', ['$q', function (q) {
 			}
 
 			return deferred.promise;
+		},
+
+		update: function (id, commentText) {
+			return this.get(id).then(function (item) {
+				item.comments.push({ text: commentText, timestamp: new Date().toISOString() });
+				return item;
+			});
 		}
 	};
 }]);
@@ -83,14 +90,21 @@ angular.module('trackr').controller('trackr.New', ['$rootScope', '$scope', 'trac
 }]);
 
 angular.module('trackr').controller('trackr.Item', ['$scope', 'trackr.itemRepository', '$routeParams', function (scope, ir, routeParams) {
-	var id = parseInt(routeParams.id, 10);
+	var id = parseInt(routeParams.id, 10),
+		setItem = function (item) {
+			scope.id = item.id;
+			scope.title = item.title;
+			scope.tags = item.tags;
+			scope.comments = item.comments;
+		};
 
-	ir.get(id).then(function (item) {
-		scope.id = item.id;
-		scope.title = item.title;
-		scope.tags = item.tags;
-		scope.comments = item.comments;
-	});
+	scope.newCommentText = '';
+
+	scope.addComment = function () {
+		ir.update(id, scope.newCommentText).then(setItem);
+	};
+
+	ir.get(id).then(setItem);
 }]);
 
 angular.module('trackr').directive('trackrMarkdownEditor', function () {
@@ -137,10 +151,10 @@ angular.module('trackr').factory('trackr.markdownRenderer', function () {
 	};
 });
 
-angular.module('trackr').directive('trackrMarkdownRenderer', function () {
+angular.module('trackr').directive('trackrMarkdownRenderer', ['trackr.markdownRenderer', function (markdownRenderer) {
 	return function postLink(scope, element, attrs) {
 		scope.$watch(attrs.trackrMarkdownRenderer, function trackrMarkdownRendererWatchAction(value) {
-			element.html('___' + value);
+			element.html(markdownRenderer.toHtml(value));
 		});
 	};
-});
+}]);
