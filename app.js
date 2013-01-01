@@ -84,12 +84,14 @@ angular.module('trackr').controller('trackr.Search', ['$scope', 'trackr.itemRepo
 }]);
 
 angular.module('trackr').controller('trackr.New', ['$rootScope', '$scope', 'trackr.itemRepository', '$location', function (rootScope, scope, ir, location) {
-	scope.title = '';
-	scope.body = '';
-	scope.tags = '';
+	scope.model = {
+		title: '',
+		body: '',
+		tags: ''
+	};
 
 	scope.submit = function () {
-		ir.create({ title: scope.title, body: scope.body }).then(function (item) {
+		ir.create({ title: scope.model.title, body: scope.model.body }).then(function (item) {
 			rootScope.$broadcast('trackr.flashMessage', 'Item created #' + item.id);
 			location.path('/item/' + item.id).replace();
 		}, function (err) {
