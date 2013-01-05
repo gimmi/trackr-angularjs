@@ -69,6 +69,19 @@ angular.module('app').factory('appItemSvc', ['$q', function (q) {
 	};
 }]);
 
+angular.module('app').factory('appTagSvc', ['$q', function (q) {
+	return {
+		getTags: function () {
+			var deferred = q.defer();
+			deferred.resolve(['one', 'two', 'three']);
+			return deferred.promise;
+		},
+		parseTags: function (tagStr) {
+			return _.compact(tagStr.split(/[^\w\d\-]/));
+		}
+	};
+}]);
+
 angular.module('app').controller('appSearchCtrl', ['$scope', 'appItemSvc', function (scope, ir) {
 	scope.query = '';
 
@@ -83,7 +96,7 @@ angular.module('app').controller('appSearchCtrl', ['$scope', 'appItemSvc', funct
 	};
 }]);
 
-angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItemSvc', '$location', function (rootScope, scope, ir, location) {
+angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItemSvc', '$location', 'appTagSvc', function (rootScope, scope, ir, location, appTagSvc) {
 	scope.model = {
 		title: '',
 		body: '',
@@ -91,8 +104,7 @@ angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItem
 	};
 
 	scope.submit = function () {
-		var tags = _.compact(scope.model.tags.split(/[^\w\d\-]/));
-		ir.create({ title: scope.model.title, body: scope.model.body, tags: tags }).then(function (item) {
+		ir.create({ title: scope.model.title, body: scope.model.body, tags: appTagSvc.parseTags(scope.model.tags) }).then(function (item) {
 			rootScope.$broadcast('app.flashMessage', 'Item created #' + item.id);
 			location.path('/item/' + item.id).replace();
 		}, function (err) {
@@ -134,6 +146,30 @@ angular.module('app').directive('appMarkdownEditor', function () {
 		controller: 'appMarkdownEditorCtrl'
 	};
 });
+
+angular.module('app').directive('appTypeahead', ['appTagSvc', function (appTagSvc) {
+	var tags = [];
+
+	appTagSvc.getTags().then(function (value) {
+		tags.push.apply(tags, value);
+	});
+
+	return function postLink(scope, element, attrs) {
+		$(element).typeahead({ 
+			source: tags,
+			matcher: function (item) {
+				var query = this.query.split(' ').pop() || '';
+				return ~item.toLowerCase().indexOf(query.toLowerCase());
+			},
+			updater: function (item) {
+				var query = this.query.split(' ');
+				query.pop();
+				query.push(item);
+				return query.join(' ');
+			}
+		});
+	};
+}]);
 
 angular.module('app').controller('appMarkdownEditorCtrl', ['$scope', 'app.markdownRenderer', function (scope, mr) {
 	scope.activeTab = 'edit';

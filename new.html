@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="span12">
 			<input class="input-block-level" type="text" placeholder="Type title here..." ng-model="model.title">
-			<input class="input-block-level" type="text" placeholder="Type space separated tags here..." ng-model="model.tags">
+			<input class="input-block-level" type="text" placeholder="Type space separated tags here..." ng-model="model.tags" app-typeahead>
 
 			<div app-markdown-editor="model.body"></div>
 
