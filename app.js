@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('app', []).config(['$routeProvider', function (rp) {
-	rp.when('/search', { templateUrl: 'search.html', controller: 'app.Search' });
-	rp.when('/new', { templateUrl: 'new.html', controller: 'app.New' });
-	rp.when('/item/:id', { templateUrl: 'item.html', controller: 'app.Item' });
+	rp.when('/search', { templateUrl: 'search.html', controller: 'appSearchCtrl' });
+	rp.when('/new', { templateUrl: 'new.html', controller: 'appNewCtrl' });
+	rp.when('/item/:id', { templateUrl: 'item.html', controller: 'appItemCtrl' });
 	rp.otherwise({ redirectTo: '/search' });
 }]);
 
-angular.module('app').factory('app.itemRepository', ['$q', function (q) {
+angular.module('app').factory('appItemSvc', ['$q', function (q) {
 	var count = 0,
 		createItem = function (data) {
 			count += 1;
@@ -69,7 +69,7 @@ angular.module('app').factory('app.itemRepository', ['$q', function (q) {
 	};
 }]);
 
-angular.module('app').controller('app.Search', ['$scope', 'app.itemRepository', function (scope, ir) {
+angular.module('app').controller('appSearchCtrl', ['$scope', 'appItemSvc', function (scope, ir) {
 	scope.query = '';
 
 	scope.results = [];
@@ -83,7 +83,7 @@ angular.module('app').controller('app.Search', ['$scope', 'app.itemRepository', 
 	};
 }]);
 
-angular.module('app').controller('app.New', ['$rootScope', '$scope', 'app.itemRepository', '$location', function (rootScope, scope, ir, location) {
+angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItemSvc', '$location', function (rootScope, scope, ir, location) {
 	scope.model = {
 		title: '',
 		body: '',
@@ -100,7 +100,7 @@ angular.module('app').controller('app.New', ['$rootScope', '$scope', 'app.itemRe
 	};
 }]);
 
-angular.module('app').controller('app.Item', ['$scope', 'app.itemRepository', '$routeParams', '$rootScope', '$location', function (scope, ir, routeParams, rootScope, location) {
+angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$routeParams', '$rootScope', '$location', function (scope, ir, routeParams, rootScope, location) {
 	var id = parseInt(routeParams.id, 10),
 		setItem = function (item) {
 			scope.id = item.id;
@@ -130,11 +130,11 @@ angular.module('app').directive('appMarkdownEditor', function () {
 			markdown: '=appMarkdownEditor'
 		},
 		templateUrl: 'markdowneditor.html',
-		controller: 'app.MarkdownEditor'
+		controller: 'appMarkdownEditorCtrl'
 	};
 });
 
-angular.module('app').controller('app.MarkdownEditor', ['$scope', 'app.markdownRenderer', function (scope, mr) {
+angular.module('app').controller('appMarkdownEditorCtrl', ['$scope', 'app.markdownRenderer', function (scope, mr) {
 	scope.activeTab = 'edit';
 	scope.html = '';
 
@@ -151,7 +151,7 @@ angular.module('app').controller('app.MarkdownEditor', ['$scope', 'app.markdownR
 	scope.helpClick = function () { scope.activeTab = 'help'; };
 }]);
 
-angular.module('app').controller('app.FlashMessage', ['$scope', '$timeout', function (scope, timeout) {
+angular.module('app').controller('appFlashMessageSvc', ['$scope', '$timeout', function (scope, timeout) {
 	var timers = {};
 	scope.messages = [];
 
