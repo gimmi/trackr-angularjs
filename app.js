@@ -100,22 +100,26 @@ angular.module('app').controller('app.New', ['$rootScope', '$scope', 'app.itemRe
 	};
 }]);
 
-angular.module('app').controller('app.Item', ['$scope', 'app.itemRepository', '$routeParams', function (scope, ir, routeParams) {
+angular.module('app').controller('app.Item', ['$scope', 'app.itemRepository', '$routeParams', '$rootScope', '$location', function (scope, ir, routeParams, rootScope, location) {
 	var id = parseInt(routeParams.id, 10),
 		setItem = function (item) {
 			scope.id = item.id;
 			scope.title = item.title;
 			scope.tags = item.tags;
 			scope.comments = item.comments;
+		},
+		handleError = function (error) {
+			rootScope.$broadcast('app.flashMessage', 'Error wile working with item #' + id + '. ' + error);
+			location.path('/').replace();
 		};
 
 	scope.newCommentText = '';
 
 	scope.addComment = function () {
-		ir.update(id, scope.newCommentText).then(setItem);
+		ir.update(id, scope.newCommentText).then(setItem, handleError);
 	};
 
-	ir.get(id).then(setItem);
+	ir.get(id).then(setItem, handleError);
 }]);
 
 angular.module('app').directive('appMarkdownEditor', function () {
@@ -130,7 +134,7 @@ angular.module('app').directive('appMarkdownEditor', function () {
 	};
 });
 
-angular.module('app').controller('app.MarkdownEditor', ['$scope', 'app.markdownRenderer', function (scope, markdownRenderer) {
+angular.module('app').controller('app.MarkdownEditor', ['$scope', 'app.markdownRenderer', function (scope, mr) {
 	scope.activeTab = 'edit';
 	scope.html = '';
 
@@ -139,7 +143,7 @@ angular.module('app').controller('app.MarkdownEditor', ['$scope', 'app.markdownR
 
 	scope.previewActive = function () { return scope.activeTab === 'preview'; };
 	scope.previewClick = function () { 
-		scope.html = markdownRenderer.toHtml(scope.markdown);
+		scope.html = mr.toHtml(scope.markdown);
 		scope.activeTab = 'preview'; 
 	};
 
