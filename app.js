@@ -131,17 +131,20 @@ angular.module('app').directive('appMarkdownEditor', function () {
 });
 
 angular.module('app').controller('app.MarkdownEditor', ['$scope', 'app.markdownRenderer', function (scope, markdownRenderer) {
-	scope.showPreview = false;
+	scope.activeTab = 'edit';
 	scope.html = '';
 
-	scope.editClick = function () {
-		scope.showPreview = false;
+	scope.editActive = function () { return scope.activeTab === 'edit'; };
+	scope.editClick = function () { scope.activeTab = 'edit'; };
+
+	scope.previewActive = function () { return scope.activeTab === 'preview'; };
+	scope.previewClick = function () { 
+		scope.html = markdownRenderer.toHtml(scope.markdown);
+		scope.activeTab = 'preview'; 
 	};
 
-	scope.previewClick = function () {
-		scope.showPreview = true;
-		scope.html = markdownRenderer.toHtml(scope.markdown);
-	};
+	scope.helpActive = function () { return scope.activeTab === 'help'; };
+	scope.helpClick = function () { scope.activeTab = 'help'; };
 }]);
 
 angular.module('app').controller('app.FlashMessage', ['$scope', '$timeout', function (scope, timeout) {
