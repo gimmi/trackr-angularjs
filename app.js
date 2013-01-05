@@ -91,7 +91,8 @@ angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItem
 	};
 
 	scope.submit = function () {
-		ir.create({ title: scope.model.title, body: scope.model.body }).then(function (item) {
+		var tags = _(scope.model.tags.split(' ')).compact();
+		ir.create({ title: scope.model.title, body: scope.model.body, tags: tags }).then(function (item) {
 			rootScope.$broadcast('app.flashMessage', 'Item created #' + item.id);
 			location.path('/item/' + item.id).replace();
 		}, function (err) {
