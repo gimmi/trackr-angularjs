@@ -13,7 +13,10 @@
 		<ul class="unstyled">
 			<li ng-repeat="result in results">
 				<h5><a ng-href="#/item/{{result.id}}">{{result.title}}</a></h5>
-				<p>{{result.body}}</p>
+				<ul class="inline">
+					<li><strong>#{{result.id}}</strong></li>
+					<li ng-repeat="tag in result.tags"><span class="label"><i class="icon-tag"></i> {{tag}}</span></li>
+				</ul>
 			</li>
 		</ul>
 	</div>
