@@ -197,9 +197,10 @@ angular.module('app').controller('appFlashMessageSvc', ['$scope', '$timeout', fu
 }]);
 
 angular.module('app').factory('app.markdownRenderer', function () {
+	var md = new Showdown.converter();
 	return {
 		toHtml: function (markdown) {
-			return "__" + markdown;
+			return md.makeHtml(markdown);
 		}
 	};
 });
