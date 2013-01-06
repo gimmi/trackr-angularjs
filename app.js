@@ -7,7 +7,7 @@ angular.module('app', []).config(['$routeProvider', function (rp) {
 	rp.otherwise({ redirectTo: '/search' });
 }]);
 
-angular.module('app').factory('appItemSvc', ['$q', function (q) {
+angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 	var count = 0,
 		createItem = function (data) {
 			count += 1;
@@ -25,11 +25,16 @@ angular.module('app').factory('appItemSvc', ['$q', function (q) {
 			createItem({ title: 'Title 3', body: 'Body 3', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] })
 		];
 
+
+
 	return {
 		find: function (query) {
-			var deferred = q.defer();
-			deferred.resolve(items);
-			return deferred.promise;
+			return http.get('/items.json').then(function (resp) {
+				if (resp.status !== 200) {
+					return q.reject('HTTP ' + resp.status);
+				}
+				return resp.data;
+			});
 		},
 
 		create: function (item) {
