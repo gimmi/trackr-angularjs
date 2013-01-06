@@ -30,10 +30,7 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 	return {
 		find: function (query) {
 			return http.get('/items.json').then(function (resp) {
-				if (resp.status !== 200) {
-					return q.reject('HTTP ' + resp.status);
-				}
-				return resp.data;
+				return (resp.status === 200 ? resp.data : q.reject('HTTP ' + resp.status));
 			});
 		},
 
