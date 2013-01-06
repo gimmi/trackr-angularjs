@@ -5,6 +5,7 @@
 			<li><strong>#{{id}}</strong></li>
 			<li ng-repeat="tag in tags"><span class="label"><i class="icon-tag"></i> {{tag}}</span></li>
 		</ul>
+		<div app-markdown-renderer="body"></div>
 	</div>
 </div>
 <div class="media" ng-repeat="comment in comments">

@@ -96,6 +96,7 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 			scope.id = item.id;
 			scope.title = item.title;
 			scope.tags = item.tags;
+			scope.body = item.body;
 			scope.comments = item.comments;
 		},
 		handleError = function (error) {
