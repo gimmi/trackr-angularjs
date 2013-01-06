@@ -65,19 +65,12 @@ angular.module('app').factory('appItemSvc', ['$q', function (q) {
 				item.comments.push({ text: commentText, timestamp: new Date().toISOString() });
 				return item;
 			});
-		}
-	};
-}]);
+		},
 
-angular.module('app').factory('appTagSvc', ['$q', function (q) {
-	return {
 		getTags: function () {
 			var deferred = q.defer();
 			deferred.resolve(['one', 'two', 'three']);
 			return deferred.promise;
-		},
-		parseTags: function (tagStr) {
-			return _.compact(tagStr.split(/[^\w\d\-]/));
 		}
 	};
 }]);
@@ -96,7 +89,7 @@ angular.module('app').controller('appSearchCtrl', ['$scope', 'appItemSvc', funct
 	};
 }]);
 
-angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItemSvc', '$location', 'appTagSvc', function (rootScope, scope, ir, location, appTagSvc) {
+angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItemSvc', '$location', 'appItemSvc', function (rootScope, scope, ir, location, appItemSvc) {
 	scope.model = {
 		title: '',
 		body: '',
@@ -104,7 +97,11 @@ angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItem
 	};
 
 	scope.submit = function () {
-		ir.create({ title: scope.model.title, body: scope.model.body, tags: appTagSvc.parseTags(scope.model.tags) }).then(function (item) {
+		var tags = _.chain(scope.model.tags.split(/[^\w\d\-]/))
+			.compact()
+			.uniq()
+			.value();
+		ir.create({ title: scope.model.title, body: scope.model.body, tags: tags }).then(function (item) {
 			rootScope.$broadcast('app.flashMessage', 'Item created #' + item.id);
 			location.path('/item/' + item.id).replace();
 		}, function (err) {
@@ -147,10 +144,11 @@ angular.module('app').directive('appMarkdownEditor', function () {
 	};
 });
 
-angular.module('app').directive('appTypeahead', ['appTagSvc', function (appTagSvc) {
+angular.module('app').directive('appTypeahead', ['appItemSvc', function (appItemSvc) {
 	var tags = [];
 
-	appTagSvc.getTags().then(function (value) {
+	appItemSvc.getTags().then(function (value) {
+		console.log("tags loaded");
 		tags.push.apply(tags, value);
 	});
 
