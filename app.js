@@ -8,7 +8,7 @@ angular.module('app', []).config(['$routeProvider', function (rp) {
 }]);
 
 angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
-	var itemsPromise = http.get('/items.json').then(function (resp) {
+	var itemsPromise = http.get('items.json').then(function (resp) {
 			return (resp.status === 200 ? resp.data : q.reject('HTTP ' + resp.status));
 		});
 
