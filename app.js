@@ -8,7 +8,10 @@ angular.module('app', []).config(['$routeProvider', function (rp) {
 }]);
 
 angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
-	var count = 0,
+	var itemsPromise = http.get('/items.json').then(function (resp) {
+			return (resp.status === 200 ? resp.data : q.reject('HTTP ' + resp.status));
+		}),
+		count = 0,
 		createItem = function (data) {
 			count += 1;
 			return {
@@ -29,37 +32,25 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 
 	return {
 		find: function (query) {
-			return http.get('/items.json').then(function (resp) {
-				return (resp.status === 200 ? resp.data : q.reject('HTTP ' + resp.status));
+			return itemsPromise;
+		},
+
+		create: function (newItem) {
+			return itemsPromise.then(function (items) {
+				newItem.id = _(items).chain()
+					.map(function (item) { return item.id; })
+					.max()
+					.value() + 1;
+				items.push(newItem);
+				return newItem;
 			});
 		},
 
-		create: function (item) {
-			var deferred = q.defer();
-			item = createItem(item);
-			items.push(item);
-			deferred.resolve(item);
-			return deferred.promise;
-		},
-
 		get: function (id) {
-			var i,
-				item = null,
-				deferred = q.defer();
-
-			for (i = 0; i < items.length; i += 1) {
-				if (items[i].id === id) {
-					item = items[i];
-				}
-			}
-
-			if (item) {
-				deferred.resolve(item);
-			} else {
-				deferred.reject('not found');
-			}
-
-			return deferred.promise;
+			return itemsPromise.then(function (items) {
+				var item = _(items).find(function (item) { return item.id === id; });
+				return item || q.reject('not found');
+			});
 		},
 
 		update: function (id, commentText) {
