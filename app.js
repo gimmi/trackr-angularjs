@@ -10,25 +10,7 @@ angular.module('app', []).config(['$routeProvider', function (rp) {
 angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 	var itemsPromise = http.get('/items.json').then(function (resp) {
 			return (resp.status === 200 ? resp.data : q.reject('HTTP ' + resp.status));
-		}),
-		count = 0,
-		createItem = function (data) {
-			count += 1;
-			return {
-				id: count,
-				title: data.title || 'No title',
-				body: data.body || '',
-				tags: data.tags || [],
-				comments: data.comments || []
-			};
-		},
-		items = [
-			createItem({ title: 'Title 1', body: 'Body 1', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] }),
-			createItem({ title: 'Title 2', body: 'Body 2', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] }),
-			createItem({ title: 'Title 3', body: 'Body 3', comments: [{ text: 'Comment 1', timestamp: '2012-12-30T08:35' }, { text: 'Comment 2', timestamp: '2012-12-30T08:35' }] })
-		];
-
-
+		});
 
 	return {
 		find: function (query) {
@@ -61,9 +43,14 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 		},
 
 		getTags: function () {
-			var deferred = q.defer();
-			deferred.resolve(['one', 'two', 'three']);
-			return deferred.promise;
+			return itemsPromise.then(function (items) {
+				return _(items).chain()
+					.map(function (item) { return item.tags; })
+					.flatten()
+					.compact()
+					.uniq()
+					.value();
+			});
 		}
 	};
 }]);

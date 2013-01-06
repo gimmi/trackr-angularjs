@@ -14,7 +14,7 @@
 	"id": 2,
 	"title": "Title 1", 
 	"body": "Body 1", 
-	"tags": [ "status-open", "area-core", "assignedto-gimmi" ],
+	"tags": [ "status-closed", "area-db", "assignedto-elena" ],
 	"comments": [{ 
 		"text": "Comment 1", 
 		"timestamp": "2012-12-30T08:35"
@@ -26,7 +26,7 @@
 	"id": 3,
 	"title": "Title 1", 
 	"body": "Body 1", 
-	"tags": [ "status-open", "area-core", "assignedto-gimmi" ],
+	"tags": [ "status-test", "area-ui", "assignedto-birba" ],
 	"comments": [{ 
 		"text": "Comment 1", 
 		"timestamp": "2012-12-30T08:35"
