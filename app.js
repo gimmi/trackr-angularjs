@@ -19,10 +19,14 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 
 		create: function (newItem) {
 			return itemsPromise.then(function (items) {
-				newItem.id = _(items).chain()
+				var newId = _(items).chain()
 					.map(function (item) { return item.id; })
 					.max()
 					.value() + 1;
+				_(newItem).extend({
+					id: newId,
+					comments: []
+				});
 				items.push(newItem);
 				return newItem;
 			});
@@ -134,7 +138,7 @@ angular.module('app').directive('appTypeahead', ['appItemSvc', function (appItem
 	});
 
 	var getLastWord = function (tags) {
-	    return tags.split(' ').pop() || '';
+		return tags.split(' ').pop() || '';
 	};
 
 	return function postLink(scope, element, attrs) {
