@@ -2,13 +2,13 @@
 	<div class="span12">
 		<h3>{{title}}</h3>
 		<ul class="inline">
-			<li><strong>#{{id}}</strong></li>
-			<li ng-repeat="tag in tags"><span class="label"><i class="icon-tag"></i> {{tag}}</span></li>
+			<li><strong>#{{model.id}}</strong></li>
+			<li ng-repeat="tag in model.tags"><span class="label"><i class="icon-tag"></i> {{tag}}</span></li>
 		</ul>
-		<div app-markdown-renderer="body"></div>
+		<div app-markdown-renderer="model.body"></div>
 	</div>
 </div>
-<div class="media" ng-repeat="comment in comments">
+<div class="media" ng-repeat="comment in model.comments">
 	<img class="pull-left media-object" src="http://www.gravatar.com/avatar/9a2d1bc06c719550eb756b8cc32baa37?s=64">
 	<p class="media-heading muted">{{comment.timestamp | date:'short'}}</p>
 	<div class="media-body" app-markdown-renderer="comment.text"></div>

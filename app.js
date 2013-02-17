@@ -95,13 +95,16 @@ angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItem
 }]);
 
 angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$routeParams', '$rootScope', '$location', function (scope, ir, routeParams, rootScope, location) {
+	scope.model = {
+		id: 0,
+		title: '',
+		tags: [],
+		body: '',
+		comments: []
+	};
 	var id = parseInt(routeParams.id, 10),
 		setItem = function (item) {
-			scope.id = item.id;
-			scope.title = item.title;
-			scope.tags = item.tags;
-			scope.body = item.body;
-			scope.comments = item.comments;
+			_(scope.model).extend(item);
 		},
 		handleError = function (error) {
 			rootScope.$broadcast('app.flashMessage', 'Error wile working with item #' + id + '. ' + error);
