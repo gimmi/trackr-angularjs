@@ -133,18 +133,26 @@ angular.module('app').directive('appTypeahead', ['appItemSvc', function (appItem
 		tags.push.apply(tags, value);
 	});
 
+	var getLastWord = function (tags) {
+	    return tags.split(' ').pop() || '';
+	};
+
 	return function postLink(scope, element, attrs) {
 		$(element).typeahead({ 
 			source: tags,
 			matcher: function (item) {
-				var query = this.query.split(' ').pop() || '';
-				return ~item.toLowerCase().indexOf(query.toLowerCase());
+				var word = getLastWord(this.query);
+				return ~item.toLowerCase().indexOf(word.toLowerCase());
 			},
 			updater: function (item) {
 				var query = this.query.split(' ');
 				query.pop();
 				query.push(item);
 				return query.join(' ');
+			},
+			highlighter: function (item) {
+				var word = getLastWord(this.query);
+				return item.replace(word, '<strong>' + word + '</strong>');
 			}
 		});
 	};
