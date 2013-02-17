@@ -2,7 +2,7 @@
 
 angular.module('app', []).config(['$routeProvider', function (rp) {
 	rp.when('/search', { templateUrl: 'search.html', controller: 'appSearchCtrl' });
-	rp.when('/new', { templateUrl: 'new.html', controller: 'appNewCtrl' });
+	rp.when('/new', { templateUrl: 'edit.html', controller: 'appEditCtrl' });
 	rp.when('/item/:id', { templateUrl: 'item.html', controller: 'appItemCtrl' });
 	rp.otherwise({ redirectTo: '/search' });
 }]);
@@ -73,7 +73,7 @@ angular.module('app').controller('appSearchCtrl', ['$scope', 'appItemSvc', funct
 	};
 }]);
 
-angular.module('app').controller('appNewCtrl', ['$rootScope', '$scope', 'appItemSvc', '$location', 'appItemSvc', function (rootScope, scope, ir, location, appItemSvc) {
+angular.module('app').controller('appEditCtrl', ['$rootScope', '$scope', 'appItemSvc', '$location', 'appItemSvc', function (rootScope, scope, ir, location, appItemSvc) {
 	scope.model = {
 		title: '',
 		body: '',
