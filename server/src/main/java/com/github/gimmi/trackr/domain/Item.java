@@ -1,4 +1,4 @@
-package com.github.gimmi.trackr;
+package com.github.gimmi.trackr.domain;
 
 import javax.persistence.*;
 import java.util.*;

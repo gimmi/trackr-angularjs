@@ -1,4 +1,4 @@
-package com.github.gimmi.trackr;
+package com.github.gimmi.trackr.configuration;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

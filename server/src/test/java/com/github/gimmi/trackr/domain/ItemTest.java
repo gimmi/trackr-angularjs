@@ -1,18 +1,20 @@
-package com.github.gimmi.trackr;
+package com.github.gimmi.trackr.domain;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.*;
+import java.util.List;
+import java.util.Properties;
 
-import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class EntityManagerIllustrationTest {
+public class ItemTest {
 	private EntityManagerFactory emf;
 
 	@Before
@@ -52,9 +54,9 @@ public class EntityManagerIllustrationTest {
 		entityManager = emf.createEntityManager();
 		entityManager.getTransaction().begin();
 		List<Item> result = entityManager.createQuery("SELECT i FROM Item i", Item.class).getResultList();
-		assertEquals(1, result.size());
-		assertEquals("Our very first task!", result.get(0).getTitle());
-		assertEquals(task.getId(), result.get(0).getId());
+		Assert.assertEquals(1, result.size());
+		Assert.assertEquals("Our very first task!", result.get(0).getTitle());
+		Assert.assertEquals(task.getId(), result.get(0).getId());
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
@@ -67,7 +69,7 @@ public class EntityManagerIllustrationTest {
 		EntityManager entityManager = emf.createEntityManager();
 		entityManager.getTransaction().begin();
 		entityManager.persist(task);
-		assertEquals(0, task.getVersion());
+		Assert.assertEquals(0, task.getVersion());
 		entityManager.getTransaction().commit();
 		entityManager.close();
 

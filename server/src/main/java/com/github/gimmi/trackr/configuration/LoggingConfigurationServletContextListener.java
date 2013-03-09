@@ -1,4 +1,4 @@
-package com.github.gimmi.trackr;
+package com.github.gimmi.trackr.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;
