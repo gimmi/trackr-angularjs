@@ -1,4 +1,4 @@
-package com.github.gimmi.trackr;
+package com.github.gimmi.trackr.web;
 
 import javax.inject.Singleton;
 import javax.servlet.ServletException;

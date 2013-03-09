@@ -1,7 +1,7 @@
 package com.github.gimmi.trackr.configuration;
 
-import com.github.gimmi.trackr.HelloWorldServlet;
-import com.github.gimmi.trackr.ItemResource;
+import com.github.gimmi.trackr.web.HelloWorldServlet;
+import com.github.gimmi.trackr.web.ItemResource;
 import com.google.inject.Singleton;
 import com.google.inject.persist.PersistFilter;
 import com.google.inject.persist.jpa.JpaPersistModule;
