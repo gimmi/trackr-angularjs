@@ -4,7 +4,7 @@
 		<listener-class>com.github.gimmi.trackr.configuration.LoggingConfigurationServletContextListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class>com.github.gimmi.trackr.configuration.AppGuiceServletContextListener</listener-class>
+		<listener-class>com.github.gimmi.trackr.configuration.AppServletContextListener</listener-class>
 	</listener>
     <filter>
         <filter-name>guiceFilter</filter-name>
