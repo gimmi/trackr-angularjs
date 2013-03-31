@@ -1,5 +1,7 @@
 package com.github.gimmi.trackr.domain;
 
+import com.github.gimmi.trackr.TestDbHelpers;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,7 +10,9 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -18,26 +22,13 @@ public class ItemTest {
 	private EntityManagerFactory emf;
 
 	@Before
-	public void beforeClass() {
-		Properties map = new Properties();
-
-		map.put("javax.persistence.jdbc.driver", "org.h2.Driver");
-		map.put("javax.persistence.jdbc.url", "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE");
-		map.put("javax.persistence.jdbc.user", "sa");
-		map.put("javax.persistence.jdbc.password", "");
-
-		// See http://wiki.eclipse.org/EclipseLink/Examples/JPA/Logging
-		map.put("eclipselink.logging.logger", "DefaultLogger");
-		map.put("eclipselink.logging.level", "ALL");
-
-		// See http://wiki.eclipse.org/EclipseLink/Examples/JPA/DDL
-		map.put("eclipselink.ddl-generation", "drop-and-create-tables");
-
-		emf = Persistence.createEntityManagerFactory("com.github.gimmi.trackr", map);
+	public void before() {
+		TestDbHelpers.rebuildDatabase();
+		emf = TestDbHelpers.createEntityManagerFactory();
 	}
 
 	@After
-	public void afterClass() {
+	public void after() {
 		emf.close();
 	}
 
