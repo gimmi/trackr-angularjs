@@ -64,7 +64,7 @@ public class ItemResourceTest {
 
 	@Test
 	public void should_get_all_items() {
-		TestDbHelpers.execSql("INSERT INTO ITEM SET ID = 'id1', TITLE = 'item 1 title', VERSION = 1");
+		TestDbHelpers.execSql("INSERT INTO ITEMS SET ID = 'id1', TITLE = 'item 1 title', VERSION = 1");
 
 		ClientResponse resp = client.resource("http://localhost:8080/api/items")
 				.accept("application/json")
@@ -85,7 +85,7 @@ public class ItemResourceTest {
 
 		assertThat(resp.getStatus(), equalTo(201));
 
-		List<Map<String, Object>> rows = TestDbHelpers.query("SELECT * FROM ITEM");
+		List<Map<String, Object>> rows = TestDbHelpers.query("SELECT * FROM ITEMS");
 		assertThat(rows.size(), equalTo(1));
 		assertThat(rows.get(0).get("TITLE").toString(), equalTo("item title"));
 
@@ -95,7 +95,7 @@ public class ItemResourceTest {
 
 	@Test
 	public void should_get_item_by_id() {
-		TestDbHelpers.execSql("INSERT INTO ITEM SET ID = 'id1', TITLE = 'item 1 title', VERSION = 1");
+		TestDbHelpers.execSql("INSERT INTO ITEMS SET ID = 'id1', TITLE = 'item 1 title', VERSION = 1");
 
 		ClientResponse resp = client.resource("http://localhost:8080/api/items/id1")
 				.accept("application/json")

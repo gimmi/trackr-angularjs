@@ -15,9 +15,10 @@ public class TestDbHelpers {
 	public static final String USER = "sa";
 	public static final String PWD = "";
 	public static final String DRIVER = "org.h2.Driver";
+	public static final String PERSISTENCE_UNIT_NAME = "com.github.gimmi.trackr";
 
 	public static void createDdlSqlFile() {
-		Map<String, String> map = new HashMap<>();
+		Map<String, String> map = getTestJpaProps();
 
 		// See http://wiki.eclipse.org/EclipseLink/Examples/JPA/DDL
 		// See http://eclipse.org/eclipselink/documentation/2.4/jpa/extensions/p_ddl_generation.htm
@@ -26,21 +27,11 @@ public class TestDbHelpers {
 		map.put(PersistenceUnitProperties.CREATE_JDBC_DDL_FILE, "create.sql");
 		map.put(PersistenceUnitProperties.APP_LOCATION, "c:\\users\\gimmi\\temp");
 
-		createEntityManagerFactory(map).createEntityManager().close();
+		Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, map).createEntityManager().close();
 	}
 
 	public static EntityManagerFactory createEntityManagerFactory() {
-		return createEntityManagerFactory(new HashMap<String, String>());
-	}
-
-	public static EntityManagerFactory createEntityManagerFactory(Map<String, String> map) {
-		map.putAll(getTestJpaProps());
-
-		// See http://wiki.eclipse.org/EclipseLink/Examples/JPA/Logging
-		map.put("eclipselink.logging.logger", "DefaultLogger");
-		map.put("eclipselink.logging.level", "ALL");
-
-		return Persistence.createEntityManagerFactory("com.github.gimmi.trackr", map);
+		return Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, getTestJpaProps());
 	}
 
 	public static Map<String, String> getTestJpaProps() {
@@ -50,13 +41,22 @@ public class TestDbHelpers {
 		map.put("javax.persistence.jdbc.user", USER);
 		map.put("javax.persistence.jdbc.password", PWD);
 
+		// See http://wiki.eclipse.org/EclipseLink/Examples/JPA/Logging
+		map.put("eclipselink.logging.logger", "DefaultLogger");
+		map.put("eclipselink.logging.level", "ALL");
+
 		map.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.NONE);
+
 		return map;
 	}
 
 	public static void rebuildDatabase() {
-		execSql("DROP TABLE IF EXISTS ITEM");
-		execSql("CREATE TABLE ITEM(ID CHAR(36), TITLE VARCHAR, VERSION INTEGER, PRIMARY KEY (ID))");
+		execSql("DROP TABLE IF EXISTS TAGS");
+		execSql("DROP TABLE IF EXISTS ITEMS");
+		execSql("CREATE TABLE ITEMS (ID CHAR(36), TITLE VARCHAR, VERSION INTEGER, PRIMARY KEY (ID))");
+		execSql("CREATE TABLE TAGS (ITEM_ID CHAR(36), TAG VARCHAR)");
+		execSql("ALTER TABLE TAGS ADD CONSTRAINT UNQ_TAGS_0 UNIQUE (ITEM_ID, TAG)");
+		execSql("ALTER TABLE TAGS ADD CONSTRAINT FK_TAGS_ITEM_ID FOREIGN KEY (ITEM_ID) REFERENCES ITEMS (ID)");
 	}
 
 	public static void execSql(String sql) {
