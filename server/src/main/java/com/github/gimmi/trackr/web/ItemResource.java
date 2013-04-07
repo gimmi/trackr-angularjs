@@ -37,7 +37,7 @@ public class ItemResource {
 	@POST
 	@Transactional
 	public Response post(Item item, @Context UriInfo ui) {
-		entityManager.merge(item);
+		item = entityManager.merge(item);
 		return Response.created(ui.getAbsolutePathBuilder().path(item.getId()).build()).build();
 	}
 }
