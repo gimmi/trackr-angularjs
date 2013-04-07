@@ -81,7 +81,7 @@ public class ItemResourceTest {
 		ClientResponse resp = client.resource("http://localhost:8080/api/items")
 				.accept("application/json")
 				.type("application/json")
-				.post(ClientResponse.class, "{ title: 'item title' }");
+				.post(ClientResponse.class, "{ title: 'item title', tags: [ 'tag1' ] }");
 
 		assertThat(resp.getStatus(), equalTo(201));
 
@@ -91,6 +91,10 @@ public class ItemResourceTest {
 
 		String itemLocation = resp.getHeaders().getFirst("Location");
 		assertThat(itemLocation, equalTo("http://localhost:8080/api/items/" + rows.get(0).get("ID").toString()));
+
+		rows = TestDbHelpers.query("SELECT * FROM TAGS");
+		assertThat(rows.size(), equalTo(1));
+		assertThat(rows.get(0).get("TAG").toString(), equalTo("tag1"));
 	}
 
 	@Test

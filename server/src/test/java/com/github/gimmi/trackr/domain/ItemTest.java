@@ -82,9 +82,21 @@ public class ItemTest {
         entityManager.close();
 
         entityManager = emf.createEntityManager();
+	    entityManager.getTransaction().begin();
         item = entityManager.find(Item.class, item.getId());
-        entityManager.close();
-        assertThat(item.getTags().size(), equalTo(2));
-        assertThat(item.getTags(), hasItems("tag1", "tag2"));
+	    assertThat(item.getTags().size(), equalTo(2));
+	    assertThat(item.getTags(), hasItems("tag1", "tag2"));
+	    item.getTags().remove("tag2");
+	    item.getTags().add("tag3");
+	    entityManager.getTransaction().commit();
+	    entityManager.close();
+
+        entityManager = emf.createEntityManager();
+	    entityManager.getTransaction().begin();
+        item = entityManager.find(Item.class, item.getId());
+	    assertThat(item.getTags().size(), equalTo(2));
+	    assertThat(item.getTags(), hasItems("tag1", "tag3"));
+	    entityManager.getTransaction().commit();
+	    entityManager.close();
     }
 }
