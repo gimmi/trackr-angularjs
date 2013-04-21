@@ -73,7 +73,7 @@ angular.module('app').controller('appSearchCtrl', ['$scope', 'appItemSvc', funct
 	};
 }]);
 
-angular.module('app').controller('appEditCtrl', ['$rootScope', '$scope', 'appItemSvc', '$location', 'appItemSvc', function (rootScope, scope, ir, location, appItemSvc) {
+angular.module('app').controller('appEditCtrl', ['$rootScope', '$scope', '$location', 'appItemSvc', function (rootScope, scope, location, appItemSvc) {
 	scope.model = {
 		title: '',
 		body: '',
@@ -85,7 +85,7 @@ angular.module('app').controller('appEditCtrl', ['$rootScope', '$scope', 'appIte
 			.compact()
 			.uniq()
 			.value();
-		ir.create({ title: scope.model.title, body: scope.model.body, tags: tags }).then(function (item) {
+		appItemSvc.create({ title: scope.model.title, body: scope.model.body, tags: tags }).then(function (item) {
 			rootScope.$broadcast('app.flashMessage', 'Item created #' + item.id);
 			location.path('/item/' + item.id).replace();
 		}, function (err) {
@@ -94,7 +94,7 @@ angular.module('app').controller('appEditCtrl', ['$rootScope', '$scope', 'appIte
 	};
 }]);
 
-angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$routeParams', '$rootScope', '$location', function (scope, ir, routeParams, rootScope, location) {
+angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$routeParams', '$rootScope', '$location', function (scope, appItemSvc, routeParams, rootScope, location) {
 	scope.model = {
 		id: 0,
 		title: '',
@@ -114,10 +114,10 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 	scope.newCommentText = '';
 
 	scope.addComment = function () {
-		ir.update(id, scope.newCommentText).then(setItem, handleError);
+		appItemSvc.update(id, scope.newCommentText).then(setItem, handleError);
 	};
 
-	ir.get(id).then(setItem, handleError);
+	appItemSvc.get(id).then(setItem, handleError);
 }]);
 
 angular.module('app').directive('appMarkdownEditor', function () {
