@@ -113,6 +113,10 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 
 	scope.newCommentText = '';
 
+	scope.edit = function () {
+		console.log('edit');
+	};
+
 	scope.addComment = function () {
 		appItemSvc.update(id, scope.newCommentText).then(setItem, handleError);
 	};
