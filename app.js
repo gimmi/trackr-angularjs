@@ -3,7 +3,7 @@
 angular.module('app', []).config(['$routeProvider', function (rp) {
 	rp.when('/search', { templateUrl: 'search.html', controller: 'appSearchCtrl' });
 	rp.when('/new', { templateUrl: 'edit.html', controller: 'appEditCtrl' });
-	rp.when('/item/:id', { templateUrl: 'item.html', controller: 'appItemCtrl' });
+	rp.when('/items/:id', { templateUrl: 'item.html', controller: 'appItemCtrl' });
 	rp.otherwise({ redirectTo: '/search' });
 }]);
 
@@ -87,7 +87,7 @@ angular.module('app').controller('appEditCtrl', ['$rootScope', '$scope', '$locat
 			.value();
 		appItemSvc.create({ title: scope.model.title, body: scope.model.body, tags: tags }).then(function (item) {
 			rootScope.$broadcast('app.flashMessage', 'Item created #' + item.id);
-			location.path('/item/' + item.id).replace();
+			location.path('/items/' + item.id).replace();
 		}, function (err) {
 			console.log(err);
 		});
