@@ -1,14 +1,10 @@
 <form ng-submit="submit()">
-	<div class="row">
-		<div class="span12">
-			<input class="input-block-level" type="text" placeholder="Type title here..." ng-model="model.title">
-			<input class="input-block-level" type="text" placeholder="Type space separated tags here..." ng-model="model.tags" app-typeahead>
+	<input class="input-block-level" type="text" placeholder="Type title here..." ng-model="model.title">
+	<input class="input-block-level" type="text" placeholder="Type space separated tags here..." ng-model="model.tags" app-typeahead>
 
-			<div app-markdown-editor="model.body"></div>
+	<div app-markdown-editor="model.body"></div>
 
-			<div class="form-actions">
-				<button type="submit" class="btn btn-primary">Save</button>
-			</div>
-		</div>
+	<div class="form-actions">
+		<button type="submit" class="btn btn-primary">Save</button>
 	</div>
 </form>
