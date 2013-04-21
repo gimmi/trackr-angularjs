@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('app', []).config(['$routeProvider', function (rp) {
-	rp.when('/search', { templateUrl: 'search.html', controller: 'appSearchCtrl' });
+	rp.when('/items', { templateUrl: 'items.html', controller: 'appItemsCtrl' });
 	rp.when('/new', { templateUrl: 'edit.html', controller: 'appEditCtrl' });
 	rp.when('/items/:id', { templateUrl: 'item.html', controller: 'appItemCtrl' });
-	rp.otherwise({ redirectTo: '/search' });
+	rp.otherwise({ redirectTo: '/items' });
 }]);
 
 angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
@@ -59,7 +59,7 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 	};
 }]);
 
-angular.module('app').controller('appSearchCtrl', ['$scope', 'appItemSvc', function (scope, ir) {
+angular.module('app').controller('appItemsCtrl', ['$scope', 'appItemSvc', function (scope, ir) {
 	scope.query = '';
 
 	scope.results = [];
