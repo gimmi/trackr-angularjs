@@ -2,7 +2,7 @@
 
 angular.module('app', []).config(['$routeProvider', function (rp) {
 	rp.when('/items', { templateUrl: 'items.html', controller: 'appItemsCtrl' });
-	rp.when('/new', { templateUrl: 'edit.html', controller: 'appEditCtrl' });
+	rp.when('/items/new', { templateUrl: 'edit.html', controller: 'appEditCtrl' });
 	rp.when('/items/:id', { templateUrl: 'item.html', controller: 'appItemCtrl' });
 	rp.otherwise({ redirectTo: '/items' });
 }]);
