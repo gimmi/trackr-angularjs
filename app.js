@@ -122,18 +122,6 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 	appItemSvc.get(id).then(setItem, handleError);
 }]);
 
-angular.module('app').directive('appMarkdownEditor', function () {
-	return {
-		restrict: 'A',
-		replace: true,
-		scope: {
-			markdown: '=appMarkdownEditor'
-		},
-		templateUrl: 'markdowneditor.html',
-		controller: 'appMarkdownEditorCtrl'
-	};
-});
-
 angular.module('app').directive('appTypeahead', ['appItemSvc', function (appItemSvc) {
 	var tags = [];
 
@@ -166,6 +154,18 @@ angular.module('app').directive('appTypeahead', ['appItemSvc', function (appItem
 		});
 	};
 }]);
+
+angular.module('app').directive('appMarkdownEditor', function () {
+	return {
+		restrict: 'A',
+		replace: true,
+		scope: {
+			markdown: '=appMarkdownEditor'
+		},
+		templateUrl: 'markdowneditor.html',
+		controller: 'appMarkdownEditorCtrl'
+	};
+});
 
 angular.module('app').controller('appMarkdownEditorCtrl', ['$scope', 'app.markdownRenderer', function (scope, mr) {
 	scope.activeTab = 'edit';
