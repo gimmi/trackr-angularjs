@@ -186,7 +186,7 @@ angular.module('app').controller('appMarkdownEditorCtrl', ['$scope', 'app.markdo
 	scope.helpClick = function () { scope.activeTab = 'help'; };
 }]);
 
-angular.module('app').controller('appFlashMessageSvc', ['$scope', '$timeout', function (scope, timeout) {
+angular.module('app').controller('appFlashMessageCtrl', ['$scope', '$timeout', function (scope, timeout) {
 	var timers = {};
 	scope.messages = [];
 
