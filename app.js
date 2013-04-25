@@ -73,7 +73,7 @@ angular.module('app').controller('appItemsCtrl', ['$scope', 'appItemSvc', functi
 	};
 }]);
 
-angular.module('app').controller('appEditCtrl', ['$rootScope', '$scope', '$location', 'appItemSvc', function (rootScope, scope, location, appItemSvc) {
+angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFlashSvc', function (scope, appItemSvc, appFlashSvc) {
 	scope.model = {
 		title: '',
 		body: '',
@@ -86,15 +86,14 @@ angular.module('app').controller('appEditCtrl', ['$rootScope', '$scope', '$locat
 			.uniq()
 			.value();
 		appItemSvc.create({ title: scope.model.title, body: scope.model.body, tags: tags }).then(function (item) {
-			rootScope.$broadcast('app.flashMessage', 'Item created #' + item.id);
-			location.path('/items/' + item.id).replace();
+			appFlashSvc.redirect('/items/' + item.id, 'Item created #' + item.id);
 		}, function (err) {
 			console.log(err);
 		});
 	};
 }]);
 
-angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$routeParams', '$rootScope', '$location', function (scope, appItemSvc, routeParams, rootScope, location) {
+angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$routeParams', 'appFlashSvc', function (scope, appItemSvc, routeParams, appFlashSvc) {
 	scope.model = {
 		id: 0,
 		title: '',
@@ -107,8 +106,7 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 			_(scope.model).extend(item);
 		},
 		handleError = function (error) {
-			rootScope.$broadcast('app.flashMessage', 'Error wile working with item #' + id + '. ' + error);
-			location.path('/').replace();
+			appFlashSvc.redirect('/', 'Error wile working with item #' + id + '. ' + error);
 		};
 
 	scope.newCommentText = '';
@@ -194,6 +192,15 @@ angular.module('app').controller('appFlashMessageCtrl', ['$scope', '$timeout', f
 		scope.messages.push(message);
 		timeout(function () { scope.messages.splice(0, 1); }, 5000);
 	});
+}]);
+
+angular.module('app').factory('appFlashSvc', ['$rootScope', '$location', function (rootScope, location) {
+	return {
+		redirect: function (path, message) {
+			rootScope.$broadcast('app.flashMessage', message);
+			location.path(path).replace();
+		}
+	};
 }]);
 
 angular.module('app').factory('app.markdownRenderer', function () {
