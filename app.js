@@ -88,7 +88,7 @@ angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFla
 		appItemSvc.create({ title: scope.model.title, body: scope.model.body, tags: tags }).then(function (item) {
 			appFlashSvc.redirect('/items/' + item.id, 'Item created #' + item.id);
 		}, function (err) {
-			console.log(err);
+			appFlashSvc.redirect('/', 'error while creating item: ' + err);
 		});
 	};
 }]);
