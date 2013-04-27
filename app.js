@@ -17,18 +17,18 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 			return itemsPromise;
 		},
 
-		create: function (newItem) {
+		create: function (item) {
 			return itemsPromise.then(function (items) {
 				var newId = _(items).chain()
-					.map(function (item) { return item.id; })
+					.map(function (x) { return x.id; })
 					.max()
 					.value() + 1;
-				_(newItem).extend({
+				_(item).extend({
 					id: newId,
 					comments: []
 				});
-				items.push(newItem);
-				return newItem;
+				items.push(item);
+				return item;
 			});
 		},
 
@@ -49,7 +49,7 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 		getTags: function () {
 			return itemsPromise.then(function (items) {
 				return _(items).chain()
-					.map(function (item) { return item.tags; })
+					.map(function (x) { return x.tags; })
 					.flatten()
 					.compact()
 					.uniq()
