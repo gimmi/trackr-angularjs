@@ -19,6 +19,7 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 		},
 
 		create: function (item) {
+			item = angular.copy(item);
 			return itemsPromise.then(function (items) {
 				var newId = _(items).chain()
 					.map(function (x) { return x.id; })
@@ -29,35 +30,41 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 					comments: []
 				});
 				items.push(item);
-				return item;
+				return angular.copy(item);
 			});
 		},
 
 		update: function (item) {
+			item = angular.copy(item);
 			return this.get(item.id).then(function (x) {
 				_(x).extend(item);
-				return x;
+				return angular.copy(x);
 			});
 		},
 
 		get: function (id) {
 			return itemsPromise.then(function (items) {
 				var item = _(items).find(function (item) { return item.id === id; });
-				return item || q.reject('not found');
+				return item ? angular.copy(item) : q.reject('not found');
 			});
 		},
 
 		comment: function (id, text) {
+			text = angular.copy(text);
 			return this.get(id).then(function (item) {
-				item.comments.push({ text: text, timestamp: new Date().toISOString() });
-				return item;
+				var comment = { 
+					text: text, 
+					timestamp: new Date().toISOString()
+				};
+				item.comments.push(comment);
+				return angular.copy(comment);
 			});
 		},
 
 		getTags: function () {
 			return itemsPromise.then(function (items) {
 				return _(items).chain()
-					.map(function (x) { return x.tags; })
+					.map(function (x) { return angular.copy(x.tags); })
 					.flatten()
 					.compact()
 					.uniq()
@@ -117,12 +124,7 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 		comments: []
 	};
 	var id = parseInt(routeParams.id, 10),
-		setItem = function (item) {
-			_(scope.model).extend(item);
-		},
-		handleError = function (error) {
-			appFlashSvc.redirect('/', 'Error wile working with item #' + id + '. ' + error);
-		};
+		handleError = function (error) { appFlashSvc.redirect('/', 'Error wile working with item #' + id + '. ' + error); };
 
 	scope.newCommentText = '';
 
@@ -131,10 +133,15 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 	};
 
 	scope.addComment = function () {
-		appItemSvc.comment(id, scope.newCommentText).then(setItem, handleError);
+		appItemSvc.comment(id, scope.newCommentText).then(function (comment) {
+			scope.model.comments.push(comment);
+			scope.newCommentText = '';
+		}, handleError);
 	};
 
-	appItemSvc.get(id).then(setItem, handleError);
+	appItemSvc.get(id).then(function (item) {
+		_(scope.model).extend(item);
+	}, handleError);
 }]);
 
 angular.module('app').directive('appTagsEditor', ['appItemSvc', function (appItemSvc) {
