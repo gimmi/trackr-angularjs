@@ -4,6 +4,7 @@ angular.module('app', []).config(['$routeProvider', function (rp) {
 	rp.when('/items', { templateUrl: 'items.html', controller: 'appItemsCtrl' });
 	rp.when('/items/new', { templateUrl: 'edit.html', controller: 'appEditCtrl' });
 	rp.when('/items/:id', { templateUrl: 'item.html', controller: 'appItemCtrl' });
+	rp.when('/items/:id/edit', { templateUrl: 'edit.html', controller: 'appEditCtrl' });
 	rp.otherwise({ redirectTo: '/items' });
 }]);
 
@@ -29,6 +30,13 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 				});
 				items.push(item);
 				return item;
+			});
+		},
+
+		update: function (item) {
+			return this.get(item.id).then(function (x) {
+				_(x).extend(item);
+				return x;
 			});
 		},
 
@@ -73,18 +81,29 @@ angular.module('app').controller('appItemsCtrl', ['$scope', 'appItemSvc', functi
 	};
 }]);
 
-angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFlashSvc', function (scope, appItemSvc, appFlashSvc) {
+angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFlashSvc', '$routeParams', function (scope, appItemSvc, appFlashSvc, routeParams) {
 	scope.model = {
 		title: '',
 		body: '',
 		tags: []
 	};
 
+	var id = parseInt(routeParams.id, 10);
+
+	if (id) {
+		appItemSvc.get(id).then(function (item) { 
+			_(scope.model).extend(item);
+		}, function (err) { 
+			appFlashSvc.redirect('/', 'error while loading item: ' + err); 
+		});
+	}
+
 	scope.submit = function () {
-		appItemSvc.create(scope.model).then(function (item) {
-			appFlashSvc.redirect('/items/' + item.id, 'Item created #' + item.id);
+		var saveFn = id ? appItemSvc.update : appItemSvc.create;
+		saveFn.call(appItemSvc, scope.model).then(function (item) {
+			appFlashSvc.redirect('/items/' + item.id, 'Item saved');
 		}, function (err) {
-			appFlashSvc.redirect('/', 'error while creating item: ' + err);
+			appFlashSvc.redirect('/', 'error while saving item: ' + err);
 		});
 	};
 }]);
@@ -108,7 +127,7 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 	scope.newCommentText = '';
 
 	scope.edit = function () {
-		console.log('edit');
+		appFlashSvc.redirect('/items/' + id + '/edit');
 	};
 
 	scope.addComment = function () {
@@ -201,7 +220,9 @@ angular.module('app').controller('appFlashMessageCtrl', ['$scope', '$timeout', f
 angular.module('app').factory('appFlashSvc', ['$rootScope', '$location', function (rootScope, location) {
 	return {
 		redirect: function (path, message) {
-			rootScope.$broadcast('app.flashMessage', message);
+			if (message) {
+				rootScope.$broadcast('app.flashMessage', message);	
+			}
 			location.path(path).replace();
 		}
 	};
