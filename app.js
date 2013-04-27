@@ -74,6 +74,8 @@ angular.module('app').controller('appItemsCtrl', ['$scope', 'appItemSvc', functi
 }]);
 
 angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFlashSvc', function (scope, appItemSvc, appFlashSvc) {
+	var tagsArrayToText = function (ary) { return ary.join(' '); };
+	var tagsTextToArray = function (txt) { return _.chain(txt.split(/[^\w\d\-]/)).compact().uniq().value(); };
 	scope.model = {
 		title: '',
 		body: '',
@@ -81,11 +83,7 @@ angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFla
 	};
 
 	scope.submit = function () {
-		var tags = _.chain(scope.model.tags.split(/[^\w\d\-]/))
-			.compact()
-			.uniq()
-			.value();
-		appItemSvc.create({ title: scope.model.title, body: scope.model.body, tags: tags }).then(function (item) {
+		appItemSvc.create({ title: scope.model.title, body: scope.model.body, tags: tagsTextToArray(scope.model.tags) }).then(function (item) {
 			appFlashSvc.redirect('/items/' + item.id, 'Item created #' + item.id);
 		}, function (err) {
 			appFlashSvc.redirect('/', 'error while creating item: ' + err);
@@ -135,7 +133,7 @@ angular.module('app').directive('appTypeahead', ['appItemSvc', function (appItem
 	};
 
 	return function postLink(scope, element, attrs) {
-		$(element).typeahead({ 
+		$(element).typeahead({
 			source: tags,
 			matcher: function (item) {
 				var word = getLastWord(this.query);
