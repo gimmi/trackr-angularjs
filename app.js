@@ -39,9 +39,9 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 			});
 		},
 
-		update: function (id, commentText) {
+		comment: function (id, text) {
 			return this.get(id).then(function (item) {
-				item.comments.push({ text: commentText, timestamp: new Date().toISOString() });
+				item.comments.push({ text: text, timestamp: new Date().toISOString() });
 				return item;
 			});
 		},
@@ -112,7 +112,7 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 	};
 
 	scope.addComment = function () {
-		appItemSvc.update(id, scope.newCommentText).then(setItem, handleError);
+		appItemSvc.comment(id, scope.newCommentText).then(setItem, handleError);
 	};
 
 	appItemSvc.get(id).then(setItem, handleError);
