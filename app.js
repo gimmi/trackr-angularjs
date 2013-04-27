@@ -74,16 +74,14 @@ angular.module('app').controller('appItemsCtrl', ['$scope', 'appItemSvc', functi
 }]);
 
 angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFlashSvc', function (scope, appItemSvc, appFlashSvc) {
-	var tagsArrayToText = function (ary) { return ary.join(' '); };
-	var tagsTextToArray = function (txt) { return _.chain(txt.split(/[^\w\d\-]/)).compact().uniq().value(); };
 	scope.model = {
 		title: '',
 		body: '',
-		tags: ''
+		tags: []
 	};
 
 	scope.submit = function () {
-		appItemSvc.create({ title: scope.model.title, body: scope.model.body, tags: tagsTextToArray(scope.model.tags) }).then(function (item) {
+		appItemSvc.create(scope.model).then(function (item) {
 			appFlashSvc.redirect('/items/' + item.id, 'Item created #' + item.id);
 		}, function (err) {
 			appFlashSvc.redirect('/', 'error while creating item: ' + err);
@@ -120,36 +118,44 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 	appItemSvc.get(id).then(setItem, handleError);
 }]);
 
-angular.module('app').directive('appTypeahead', ['appItemSvc', function (appItemSvc) {
+angular.module('app').directive('appTagsEditor', ['appItemSvc', function (appItemSvc) {
 	var tags = [];
 
-	appItemSvc.getTags().then(function (value) {
-		console.log("tags loaded");
-		tags.push.apply(tags, value);
-	});
+	appItemSvc.getTags().then(function (value) { tags.push.apply(tags, value); });
 
-	var getLastWord = function (tags) {
-		return tags.split(' ').pop() || '';
-	};
+	return {
+		require: 'ngModel',
+		link: function postLink(scope, element, attrs, ngModelCtrl) {
+			var ngModelCtrlSetViewValue = ngModelCtrl.$setViewValue;
 
-	return function postLink(scope, element, attrs) {
-		$(element).typeahead({
-			source: tags,
-			matcher: function (item) {
-				var word = getLastWord(this.query);
-				return ~item.toLowerCase().indexOf(word.toLowerCase());
-			},
-			updater: function (item) {
-				var query = this.query.split(' ');
-				query.pop();
-				query.push(item);
-				return query.join(' ');
-			},
-			highlighter: function (item) {
-				var word = getLastWord(this.query);
-				return item.replace(word, '<strong>' + word + '</strong>');
-			}
-		});
+			ngModelCtrl.$setViewValue = function (value) {
+				ngModelCtrlSetViewValue.call(ngModelCtrl, value.split(' '));
+			};
+
+			ngModelCtrl.$render = function() {
+				element.val(ngModelCtrl.$viewValue.join(' '));
+			};
+
+			var getLastWord = function (tags) { return tags.split(' ').pop() || ''; };
+
+			element.typeahead({
+				source: tags,
+				matcher: function (item) {
+					var word = getLastWord(this.query);
+					return ~item.toLowerCase().indexOf(word.toLowerCase());
+				},
+				updater: function (item) {
+					var query = this.query.split(' ');
+					query.pop();
+					query.push(item);
+					return query.join(' ');
+				},
+				highlighter: function (item) {
+					var word = getLastWord(this.query);
+					return item.replace(word, '<strong>' + word + '</strong>');
+				}
+			});
+		}
 	};
 }]);
 
