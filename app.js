@@ -36,17 +36,14 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 
 		update: function (item) {
 			item = angular.copy(item);
-			return this.get(item.id).then(function (x) {
+			return this._find(item.id).then(function (x) {
 				_(x).extend(item);
 				return angular.copy(x);
 			});
 		},
 
 		get: function (id) {
-			return itemsPromise.then(function (items) {
-				var item = _(items).find(function (item) { return item.id === id; });
-				return item ? angular.copy(item) : q.reject('not found');
-			});
+			return this._find(id).then(function (item) { return angular.copy(item); });
 		},
 
 		comment: function (id, text) {
@@ -69,6 +66,13 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 					.compact()
 					.uniq()
 					.value();
+			});
+		},
+
+		_find: function (id) {
+			return itemsPromise.then(function (items) {
+				var item = _(items).find(function (item) { return item.id === id; });
+				return item || q.reject('item #' + id + ' not found');
 			});
 		}
 	};
