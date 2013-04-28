@@ -165,39 +165,26 @@ angular.module('app').directive('appTagsEditor', ['appItemSvc', function (appIte
 
 	appItemSvc.getTags().then(function (value) { tags.push.apply(tags, value); });
 
-	return {
-		require: 'ngModel',
-		link: function postLink(scope, element, attrs, ngModelCtrl) {
-			var ngModelCtrlSetViewValue = ngModelCtrl.$setViewValue;
+	return function postLink(scope, element, attrs) {
+		var getLastWord = function (tags) { return tags.split(' ').pop() || ''; };
 
-			ngModelCtrl.$setViewValue = function (value) {
-				ngModelCtrlSetViewValue.call(ngModelCtrl, value.split(' '));
-			};
-
-			ngModelCtrl.$render = function() {
-				element.val(ngModelCtrl.$viewValue.join(' '));
-			};
-
-			var getLastWord = function (tags) { return tags.split(' ').pop() || ''; };
-
-			element.typeahead({
-				source: tags,
-				matcher: function (item) {
-					var word = getLastWord(this.query);
-					return ~item.toLowerCase().indexOf(word.toLowerCase());
-				},
-				updater: function (item) {
-					var query = this.query.split(' ');
-					query.pop();
-					query.push(item);
-					return query.join(' ');
-				},
-				highlighter: function (item) {
-					var word = getLastWord(this.query);
-					return item.replace(word, '<strong>' + word + '</strong>');
-				}
-			});
-		}
+		element.typeahead({
+			source: tags,
+			matcher: function (item) {
+				var word = getLastWord(this.query);
+				return ~item.toLowerCase().indexOf(word.toLowerCase());
+			},
+			updater: function (item) {
+				var query = this.query.split(' ');
+				query.pop();
+				query.push(item);
+				return query.join(' ');
+			},
+			highlighter: function (item) {
+				var word = getLastWord(this.query);
+				return item.replace(word, '<strong>' + word + '</strong>');
+			}
+		});
 	};
 }]);
 
