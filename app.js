@@ -144,6 +144,22 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 	}, handleError);
 }]);
 
+// see http://stackoverflow.com/a/12947995/66629
+angular.module('app').directive('appArrayModel', function () {
+	return {
+		require: 'ngModel',
+		link: function postLink(scope, element, attrs, ngModelCtrl) {
+			ngModelCtrl.$parsers.push(function (text) {
+				return (text || '').match(/[^ ]+/g);
+			});
+
+			ngModelCtrl.$formatters.push(function (ary) {
+				return (ary || []).join(' ');
+			});
+		}
+	}	
+});
+
 angular.module('app').directive('appTagsEditor', ['appItemSvc', function (appItemSvc) {
 	var tags = [];
 
