@@ -164,13 +164,18 @@ angular.module('app').directive('appArrayModel', function () {
 	}	
 });
 
-angular.module('app').directive('appTagsEditor', ['appItemSvc', function (appItemSvc) {
+angular.module('app').directive('appTagsEditor', ['$sniffer', 'appItemSvc', function (sniffer, appItemSvc) {
 	var tags = [];
 
 	appItemSvc.getTags().then(function (value) { tags.push.apply(tags, value); });
 
 	return function postLink(scope, element, attrs) {
-		var getLastWord = function (tags) { return tags.split(' ').pop() || ''; };
+		var getTags = function (text) { 
+			return (text || '').match(/[^ ]+/g) || []; 
+		};
+		var getLastWord = function (tags) { 
+			return getTags().pop() || '';
+		};
 
 		element.typeahead({
 			source: tags,
@@ -179,6 +184,9 @@ angular.module('app').directive('appTagsEditor', ['appItemSvc', function (appIte
 				return ~item.toLowerCase().indexOf(word.toLowerCase());
 			},
 			updater: function (item) {
+				if (sniffer.hasEvent('input')) { // See https://github.com/twitter/bootstrap/issues/7747
+					setTimeout(function () { element.trigger('input'); }, 0);
+				}
 				var query = this.query.split(' ');
 				query.pop();
 				query.push(item);

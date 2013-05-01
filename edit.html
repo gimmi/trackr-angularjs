@@ -1,7 +1,7 @@
 <form ng-submit="submit()">
 	<input class="input-block-level" type="text" placeholder="Type title here..." ng-model="model.title">
 
-	<input class="input-block-level" type="text" placeholder="Type space separated tags here..." ng-model="model.tags" app-array-model>
+	<input class="input-block-level" type="text" placeholder="Type space separated tags here..." ng-model="model.tags" app-array-model app-tags-editor>
 	<ul class="inline">
 		<li ng-repeat="tag in model.tags"><span class="label"><i class="icon-tag"></i> {{tag}}</span></li>
 	</ul>
