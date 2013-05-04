@@ -8,7 +8,7 @@ angular.module('app', []).config(['$routeProvider', function (rp) {
 	rp.otherwise({ redirectTo: '/items' });
 }]);
 
-angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
+angular.module('app').factory('appServerSvc', ['$q', '$http', function (q, http) {
 	var itemsPromise = http.get('items.json').then(function (resp) {
 			return (resp.status === 200 ? resp.data : q.reject('HTTP ' + resp.status));
 		});
@@ -78,7 +78,7 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 	};
 }]);
 
-angular.module('app').controller('appItemsCtrl', ['$scope', 'appItemSvc', function (scope, ir) {
+angular.module('app').controller('appItemsCtrl', ['$scope', 'appServerSvc', function (scope, ir) {
 	scope.query = '';
 
 	scope.results = [];
@@ -92,7 +92,7 @@ angular.module('app').controller('appItemsCtrl', ['$scope', 'appItemSvc', functi
 	};
 }]);
 
-angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFlashSvc', '$routeParams', function (scope, appItemSvc, appFlashSvc, routeParams) {
+angular.module('app').controller('appEditCtrl', ['$scope', 'appServerSvc', 'appFlashSvc', '$routeParams', function (scope, appServerSvc, appFlashSvc, routeParams) {
 	scope.model = {
 		title: '',
 		body: '',
@@ -102,7 +102,7 @@ angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFla
 	var id = parseInt(routeParams.id, 10);
 
 	if (id) {
-		appItemSvc.getItem(id).then(function (item) { 
+		appServerSvc.getItem(id).then(function (item) { 
 			_(scope.model).extend(item);
 		}, function (err) { 
 			appFlashSvc.redirect('/', 'error while loading item: ' + err); 
@@ -110,8 +110,8 @@ angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFla
 	}
 
 	scope.submit = function () {
-		var saveFn = id ? appItemSvc.updateItem : appItemSvc.createItem;
-		saveFn.call(appItemSvc, scope.model).then(function (item) {
+		var saveFn = id ? appServerSvc.updateItem : appServerSvc.createItem;
+		saveFn.call(appServerSvc, scope.model).then(function (item) {
 			appFlashSvc.redirect('/items/' + item.id, 'Item saved');
 		}, function (err) {
 			appFlashSvc.redirect('/', 'error while saving item: ' + err);
@@ -119,7 +119,7 @@ angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFla
 	};
 }]);
 
-angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$routeParams', 'appFlashSvc', function (scope, appItemSvc, routeParams, appFlashSvc) {
+angular.module('app').controller('appItemCtrl', ['$scope', 'appServerSvc', '$routeParams', 'appFlashSvc', function (scope, appServerSvc, routeParams, appFlashSvc) {
 	scope.model = {
 		id: 0,
 		title: '',
@@ -137,13 +137,13 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 	};
 
 	scope.addComment = function () {
-		appItemSvc.createComment(id, scope.newCommentText).then(function (comment) {
+		appServerSvc.createComment(id, scope.newCommentText).then(function (comment) {
 			scope.model.comments.push(comment);
 			scope.newCommentText = '';
 		}, handleError);
 	};
 
-	appItemSvc.getItem(id).then(function (item) {
+	appServerSvc.getItem(id).then(function (item) {
 		_(scope.model).extend(item);
 	}, handleError);
 }]);
@@ -164,10 +164,10 @@ angular.module('app').directive('appArrayModel', function () {
 	}	
 });
 
-angular.module('app').directive('appTagsEditor', ['$sniffer', 'appItemSvc', function (sniffer, appItemSvc) {
+angular.module('app').directive('appTagsEditor', ['$sniffer', 'appServerSvc', function (sniffer, appServerSvc) {
 	var tags = [];
 
-	appItemSvc.findTags().then(function (value) { tags.push.apply(tags, value); });
+	appServerSvc.findTags().then(function (value) { tags.push.apply(tags, value); });
 
 	return function postLink(scope, element, attrs) {
 		var getTags = function (text) { 
