@@ -14,11 +14,11 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 		});
 
 	return {
-		find: function (query) {
+		findItem: function (query) {
 			return itemsPromise;
 		},
 
-		create: function (item) {
+		createItem: function (item) {
 			item = angular.copy(item);
 			return itemsPromise.then(function (items) {
 				var newId = _(items).chain()
@@ -34,21 +34,21 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 			});
 		},
 
-		update: function (item) {
+		updateItem: function (item) {
 			item = angular.copy(item);
-			return this._find(item.id).then(function (x) {
+			return this._findItem(item.id).then(function (x) {
 				_(x).extend(item);
 				return angular.copy(x);
 			});
 		},
 
 		get: function (id) {
-			return this._find(id).then(function (item) { return angular.copy(item); });
+			return this._findItem(id).then(function (item) { return angular.copy(item); });
 		},
 
 		comment: function (id, text) {
 			text = angular.copy(text);
-			return this.get(id).then(function (item) {
+			return this._findItem(id).then(function (item) {
 				var comment = { 
 					text: text, 
 					timestamp: new Date().toISOString()
@@ -69,7 +69,7 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 			});
 		},
 
-		_find: function (id) {
+		_findItem: function (id) {
 			return itemsPromise.then(function (items) {
 				var item = _(items).find(function (item) { return item.id === id; });
 				return item || q.reject('item #' + id + ' not found');
@@ -84,7 +84,7 @@ angular.module('app').controller('appItemsCtrl', ['$scope', 'appItemSvc', functi
 	scope.results = [];
 
 	scope.search = function () {
-		ir.find(scope.query).then(function (items) {
+		ir.findItem(scope.query).then(function (items) {
 			scope.results = items;
 		}, function (err) {
 			console.log(err);
@@ -110,7 +110,7 @@ angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFla
 	}
 
 	scope.submit = function () {
-		var saveFn = id ? appItemSvc.update : appItemSvc.create;
+		var saveFn = id ? appItemSvc.updateItem : appItemSvc.createItem;
 		saveFn.call(appItemSvc, scope.model).then(function (item) {
 			appFlashSvc.redirect('/items/' + item.id, 'Item saved');
 		}, function (err) {
