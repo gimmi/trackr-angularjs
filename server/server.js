@@ -56,6 +56,7 @@ app.put('/api/items/:id', function (req, res) {
 
 app.get('/api/items/:id/comments', function (req, res) {
 	var id = req.param('id'),
+		newComment = req.body,
 		item = findItem(id);
 
 	if (item) {
@@ -66,28 +67,18 @@ app.get('/api/items/:id/comments', function (req, res) {
 });
 
 app.post('/api/items/:id/comments', function (req, res) {
-	var newItem = req.body,
-		index = null;
+	var id = req.param('id'),
+		item = findItem(id);
 
-	items.forEach(function (v, i) { 
-		if (v.id === newItem.id) {
-			index = i;
-		}
-	});
-
-	if (!index) {
-		index = items.length;
-		items.push({
-			id: Math.random().toString(36).substring(2),
-			comments: []
+	if (item) {
+		item.comments.push({
+			itemId: id,
+			timestamp: new Date(),
+			text: newComment.text
 		});
+	} else {
+		res.send(404);
 	}
-
-	items[index].title = newItem.title;
-	items[index].tags = newItem.tags;
-	items[index].body = newItem.body;
-
-	res.json(items[index]);
 });
 
 app.listen(8080);
