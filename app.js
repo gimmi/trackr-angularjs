@@ -46,9 +46,9 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 			return this._findItem(id).then(function (item) { return angular.copy(item); });
 		},
 
-		comment: function (id, text) {
+		createComment: function (itemId, text) {
 			text = angular.copy(text);
-			return this._findItem(id).then(function (item) {
+			return this._findItem(itemId).then(function (item) {
 				var comment = { 
 					text: text, 
 					timestamp: new Date().toISOString()
@@ -137,7 +137,7 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 	};
 
 	scope.addComment = function () {
-		appItemSvc.comment(id, scope.newCommentText).then(function (comment) {
+		appItemSvc.createComment(id, scope.newCommentText).then(function (comment) {
 			scope.model.comments.push(comment);
 			scope.newCommentText = '';
 		}, handleError);
