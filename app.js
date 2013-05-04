@@ -42,7 +42,7 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 			});
 		},
 
-		get: function (id) {
+		getItem: function (id) {
 			return this._findItem(id).then(function (item) { return angular.copy(item); });
 		},
 
@@ -102,7 +102,7 @@ angular.module('app').controller('appEditCtrl', ['$scope', 'appItemSvc', 'appFla
 	var id = parseInt(routeParams.id, 10);
 
 	if (id) {
-		appItemSvc.get(id).then(function (item) { 
+		appItemSvc.getItem(id).then(function (item) { 
 			_(scope.model).extend(item);
 		}, function (err) { 
 			appFlashSvc.redirect('/', 'error while loading item: ' + err); 
@@ -143,7 +143,7 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appItemSvc', '$route
 		}, handleError);
 	};
 
-	appItemSvc.get(id).then(function (item) {
+	appItemSvc.getItem(id).then(function (item) {
 		_(scope.model).extend(item);
 	}, handleError);
 }]);
