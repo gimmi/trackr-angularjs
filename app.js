@@ -14,7 +14,7 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 		});
 
 	return {
-		findItem: function (query) {
+		findItems: function (query) {
 			return itemsPromise;
 		},
 
@@ -84,7 +84,7 @@ angular.module('app').controller('appItemsCtrl', ['$scope', 'appItemSvc', functi
 	scope.results = [];
 
 	scope.search = function () {
-		ir.findItem(scope.query).then(function (items) {
+		ir.findItems(scope.query).then(function (items) {
 			scope.results = items;
 		}, function (err) {
 			console.log(err);
