@@ -14,7 +14,6 @@
 			<li ng-repeat="result in results">
 				<h5><a ng-href="#/items/{{result.id}}">{{result.title}}</a></h5>
 				<ul class="inline">
-					<li><strong>#{{result.id}}</strong></li>
 					<li ng-repeat="tag in result.tags"><span class="label"><i class="icon-tag"></i> {{tag}}</span></li>
 				</ul>
 			</li>

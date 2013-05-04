@@ -1,7 +1,6 @@
 <button class="btn btn-small pull-right" ng-click="edit()"><i class="icon-edit"></i> Edit</button>
 <h4>{{model.title}}</h4>
 <ul class="inline">
-	<li><strong>#{{model.id}}</strong></li>
 	<li ng-repeat="tag in model.tags"><span class="label"><i class="icon-tag"></i> {{tag}}</span></li>
 </ul>
 <div app-markdown-renderer="model.body"></div>

@@ -21,12 +21,8 @@ angular.module('app').factory('appServerSvc', ['$q', '$http', function (q, http)
 		createItem: function (item) {
 			item = angular.copy(item);
 			return itemsPromise.then(function (items) {
-				var newId = _(items).chain()
-					.map(function (x) { return x.id; })
-					.max()
-					.value() + 1;
 				_(item).extend({
-					id: newId,
+					id: Math.random().toString(36).substring(2),
 					comments: []
 				});
 				items.push(item);
@@ -99,7 +95,7 @@ angular.module('app').controller('appEditCtrl', ['$scope', 'appServerSvc', 'appF
 		tags: []
 	};
 
-	var id = parseInt(routeParams.id, 10);
+	var id = routeParams.id;
 
 	if (id) {
 		appServerSvc.getItem(id).then(function (item) { 
@@ -127,7 +123,7 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appServerSvc', '$rou
 		body: '',
 		comments: []
 	};
-	var id = parseInt(routeParams.id, 10),
+	var id = routeParams.id,
 		handleError = function (error) { appFlashSvc.redirect('/', 'Error wile working with item #' + id + '. ' + error); };
 
 	scope.newCommentText = '';
