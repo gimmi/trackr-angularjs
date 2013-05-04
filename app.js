@@ -58,7 +58,7 @@ angular.module('app').factory('appItemSvc', ['$q', '$http', function (q, http) {
 			});
 		},
 
-		getTags: function () {
+		findTags: function () {
 			return itemsPromise.then(function (items) {
 				return _(items).chain()
 					.map(function (x) { return angular.copy(x.tags); })
@@ -167,7 +167,7 @@ angular.module('app').directive('appArrayModel', function () {
 angular.module('app').directive('appTagsEditor', ['$sniffer', 'appItemSvc', function (sniffer, appItemSvc) {
 	var tags = [];
 
-	appItemSvc.getTags().then(function (value) { tags.push.apply(tags, value); });
+	appItemSvc.findTags().then(function (value) { tags.push.apply(tags, value); });
 
 	return function postLink(scope, element, attrs) {
 		var getTags = function (text) { 
