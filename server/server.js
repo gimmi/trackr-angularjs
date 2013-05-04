@@ -3,6 +3,7 @@
 var express = require('express');
 var app = express();
 
+app.use('/api', express.bodyParser());
 app.use('/api', app.router);
 app.use('/', express.static(__dirname + '/..'));
 
@@ -19,12 +20,32 @@ app.get('/items/:id', function (req, res) {
 	if (item) {
 		res.json(item);
 	} else {
-		ret.status(404);
+		res.send(404);
 	}
 });
 
-app.post('/items', function () {
-	// TODO
+app.post('/items', function (req, res) {
+	var newItem = req.body,
+		index = null;
+
+	items.forEach(function (v, i) { 
+		if (v.id === newItem.id) {
+			index = i;
+		}
+	});
+
+	if (!index) {
+		index = items.length;
+		items.push({
+			id: Math.random().toString(36).substring(2)
+		});
+	}
+
+	items[index].title = newItem.title;
+	items[index].tags = newItem.tags;
+	items[index].body = newItem.body;
+
+	res.json(items[index]);
 });
 
 app.listen(8080);
