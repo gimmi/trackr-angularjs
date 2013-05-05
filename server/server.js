@@ -1,7 +1,7 @@
 "use strict";
 
 var express = require('express');
-var app = express();
+var app = module.exports = express();
 
 app.use(express.bodyParser());
 app.use(app.router);
@@ -82,9 +82,7 @@ app.post('/api/items/:id/comments', function (req, res) {
 });
 
 
-if (module.parent) {
-	module.exports = app;
-} else {
+if (!module.parent) {
 	app.listen(8080);
 	console.log('Listening on port 8080');
 }
