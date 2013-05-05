@@ -81,5 +81,10 @@ app.post('/api/items/:id/comments', function (req, res) {
 	}
 });
 
-app.listen(8080);
-console.log('Listening on port 8080');
+
+if (module.parent) {
+	module.exports = app;
+} else {
+	app.listen(8080);
+	console.log('Listening on port 8080');
+}

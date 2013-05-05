@@ -8,5 +8,8 @@
   },
   "devDependencies": {
     "jasmine-node": "1.x"
+  },
+  "scripts": {
+    "test": "node node_modules/jasmine-node/lib/jasmine-node/cli.js ."
   }
 }
