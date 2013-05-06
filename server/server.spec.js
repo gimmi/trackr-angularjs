@@ -1,4 +1,5 @@
 var http = require('http');
+var mongoose = require('mongoose');
 var app = require('./server');
 
 describe('server', function () {
@@ -8,11 +9,20 @@ describe('server', function () {
 		sockets = [];
 
 		server = http.createServer(app);
-		server.listen(8090, function () { done(); });
+
+		mongoose.connect('mongodb://localhost/trackr_tests', function (err) {
+			if (err) { done(err); return; }
+
+			server.listen(8090, function () { done(); });
+		});
+
 		server.on('connection', function (socket) { sockets.push(socket); });
 	});
 
 	afterEach(function (done) {
+		mongoose.connection.db.dropDatabase();
+		mongoose.disconnect();
+
 		sockets.forEach(function (socket) { socket.end(); });
 		server.close(function () { done(); });
 	});

@@ -1,6 +1,7 @@
 "use strict";
 
 var express = require('express');
+var mongoose = require('mongoose');
 var app = module.exports = express();
 
 app.use(express.bodyParser());
@@ -83,6 +84,7 @@ app.post('/api/items/:id/comments', function (req, res) {
 
 
 if (!module.parent) {
+	mongoose.connect('mongodb://localhost/trackr');
 	app.listen(8080);
 	console.log('Listening on port 8080');
 }
