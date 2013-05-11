@@ -29,18 +29,18 @@ describe('server', function () {
 
 	it('should get all items', function (done) {
 		addToCollection('items', [
-			{ title: 'title 1', body: 'body 1', tags: [] },
-			{ title: 'title 2', body: 'body 2', tags: [] }
+			{ title: 'title 1', body: 'body 1', tags: [] }
 		], function () {
-
 			request('http://localhost:8090/api/items', function (statusCode, ret) {
 				expect(statusCode).toBe(200);
 				expect(ret).toEqual(jasmine.any(Array));
-				expect(ret.length).toEqual(2);
+				expect(ret.length).toEqual(1);
+				expect(ret[0].title).toEqual('title 1');
+				expect(ret[0].body).toEqual('body 1');
+				expect(ret[0].tags).toEqual([]);
 
 				done();
 			});
-
 		});
 	});
 
