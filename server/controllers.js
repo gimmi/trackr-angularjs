@@ -1,12 +1,20 @@
 "use strict";
 
+var models = require('./models');
+
 var items = JSON.parse(require('fs').readFileSync(__dirname + '/../items.json', { encoding: 'utf8' }));
 var findItem = function (id) {
 	return items.filter(function (item) { return item.id === id; })[0];
 };
 
 exports.getItems = function (req, res) {
-	res.json(items);
+	models.Item.find(function (err, items) {
+		if (err) {
+			res.json(500, err);
+		} else {
+			res.json(items);
+		}
+	});
 };
 
 exports.getItem = function (req, res) {
