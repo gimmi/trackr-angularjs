@@ -28,14 +28,47 @@ describe('server', function () {
 	});
 
 	it('should get all items', function (done) {
-		request('http://localhost:8090/api/items', function (statusCode, json) {
-			expect(statusCode).toBe(200);
-			expect(json).toEqual(jasmine.any(Array));
-			expect(json.length).toEqual(3);
+		addToCollection('items', [
+			{ title: 'title 1', body: 'body 1', tags: [] },
+			{ title: 'title 2', body: 'body 2', tags: [] }
+		], function () {
 
-			done();
+			request('http://localhost:8090/api/items', function (statusCode, ret) {
+				expect(statusCode).toBe(200);
+				expect(ret).toEqual(jasmine.any(Array));
+				expect(ret.length).toEqual(2);
+
+				done();
+			});
+
 		});
 	});
+
+	function getCollection(name, callback) {
+		expect(mongoose.connection.db).toBeTruthy();
+
+		mongoose.connection.db.collection(name, function (err, coll) {
+			expect(err).toBeFalsy();
+
+			coll.find().toArray(function (err, ary) {
+				expect(err).toBeFalsy();
+
+				callback(ary);
+			});
+		});
+	}
+
+	function addToCollection(name, docs, callback) {
+		expect(mongoose.connection.db).toBeTruthy();
+
+		mongoose.connection.db.collection(name, function (err, coll) {
+			expect(err).toBeFalsy();
+
+			coll.insert(docs, {safe: true}, function(err, docs) {
+				callback(docs);
+			});
+		});
+	}
 
 	function request(options, callback) {
 		http.request(options, function (res) {
