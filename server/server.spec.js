@@ -83,7 +83,7 @@ describe('server', function () {
 	});
 
 	it('should get comments', function (done) {
-		addToCollection('items', { _id: '518e5b6d96661c4008000002', title: 'title', body: 'body', tags: [] }).then(function (item) {
+		addToCollection('items', { _id: '518e5b6d96661c4008000002', title: 'title', body: 'body', tags: [] }).then(function () {
 			return addToCollection('comments', { item: mongoose.Types.ObjectId('518e5b6d96661c4008000002'), body: 'comment body' });
 		}).then(function () {
 			return request({ path: '/api/items/518e5b6d96661c4008000002/comments' });
@@ -92,6 +92,21 @@ describe('server', function () {
 			expect(ret.data).toEqual(jasmine.any(Array));
 			expect(ret.data.length).toEqual(1);
 			expect(ret.data[0].body).toEqual('comment body');
+
+			done();
+		}).fail(done);
+	});
+
+	it('should add comment', function (done) {
+		addToCollection('items', { _id: '518e5b6d96661c4008000002', title: 'title', body: 'body', tags: [] }).then(function () {
+			return request({ method: 'POST', path: '/api/items/518e5b6d96661c4008000002/comments' }, { body: 'comment body' });
+		}).then(function (ret) {
+			expect(ret.statusCode).toBe(201);
+
+			return getCollection('comments');
+		}).then(function (comments) {
+			expect(comments.length).toEqual(1);
+			expect(comments[0].body).toEqual('comment body');
 
 			done();
 		}).fail(done);

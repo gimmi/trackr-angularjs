@@ -88,16 +88,21 @@ exports.getComments = function (req, res) {
 };
 
 exports.postComment = function (req, res) {
-	var id = req.param('id'),
-		item = findItem(id);
+	var id = req.param('id');
 
-	if (item) {
-		item.comments.push({
-			itemId: id,
-			timestamp: new Date(),
-			text: newComment.text
-		});
-	} else {
-		res.send(404);
-	}
+	models.Item.findById(id, function (err, item) {
+		if (err) {
+			res.send(500, err);
+		} else if (item) {
+			new models.Comment(req.body).save(function (err, item) {
+				if (err) {
+					res.send(500, err);
+				} else {
+					res.send(201);
+				}
+			});
+		} else {
+			res.send(404);
+		}
+	});
 };
