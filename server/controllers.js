@@ -3,11 +3,6 @@
 var mongoose = require('mongoose'),
 	models = require('./models');
 
-var items = JSON.parse(require('fs').readFileSync(__dirname + '/../items.json', { encoding: 'utf8' }));
-var findItem = function (id) {
-	return items.filter(function (item) { return item.id === id; })[0];
-};
-
 exports.getItems = function (req, res) {
 	models.Item.find(function (err, items) {
 		if (err) {
