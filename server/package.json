@@ -12,6 +12,6 @@
     "q": "0.x"
   },
   "scripts": {
-    "test": "node node_modules/jasmine-node/lib/jasmine-node/cli.js .",
+    "test": "node node_modules/jasmine-node/lib/jasmine-node/cli.js ."
   }
 }
