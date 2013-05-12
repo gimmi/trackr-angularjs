@@ -68,15 +68,23 @@ exports.putItem = function (req, res) {
 };
 
 exports.getComments = function (req, res) {
-	var id = req.param('id'),
-		newComment = req.body,
-		item = findItem(id);
+	var id = req.param('id');
 
-	if (item) {
-		res.json(item.comments);
-	} else {
-		res.send(404);
-	}
+	models.Item.findById(id, function (err, item) {
+		if (err) {
+			res.send(500, err);
+		} else if (item) {
+			models.Comment.find({ item: item._id }, function (err, comments) {
+				if (err) {
+					res.json(500, err);
+				} else {
+					res.json(comments);
+				}
+			});
+		} else {
+			res.send(404);
+		}
+	});
 };
 
 exports.postComment = function (req, res) {

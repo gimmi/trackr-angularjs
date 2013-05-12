@@ -82,6 +82,21 @@ describe('server', function () {
 		}).fail(done);
 	});
 
+	it('should get comments', function (done) {
+		addToCollection('items', { _id: '518e5b6d96661c4008000002', title: 'title', body: 'body', tags: [] }).then(function (item) {
+			return addToCollection('comments', { item: mongoose.Types.ObjectId('518e5b6d96661c4008000002'), body: 'comment body' });
+		}).then(function () {
+			return request({ path: '/api/items/518e5b6d96661c4008000002/comments' });
+		}).then(function (ret) {
+			expect(ret.statusCode).toBe(200);
+			expect(ret.data).toEqual(jasmine.any(Array));
+			expect(ret.data.length).toEqual(1);
+			expect(ret.data[0].body).toEqual('comment body');
+
+			done();
+		}).fail(done);
+	});
+
 	function getCollection(name) {
 		var deferred = Q.defer();
 
@@ -121,7 +136,7 @@ describe('server', function () {
 					return;
 				}
 
-				deferred.resolve(docs);
+				deferred.resolve(docs.length == 1 ? docs[0] : docs);
 			});
 		});
 
