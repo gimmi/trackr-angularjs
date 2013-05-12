@@ -66,6 +66,22 @@ describe('server', function () {
 		}).fail(done);
 	});
 
+	it('should update item', function (done) {
+		addToCollection('items', { _id: '518e5b6d96661c4008000002', title: 'title', body: 'body', tags: ['tag'] }).then(function () {
+			return request({ method: 'PUT', path: '/api/items/518e5b6d96661c4008000002' }, { title: 'updated title', body: 'updated body', tags: ['new tag'] });
+		}).then(function (ret) {
+			expect(ret.statusCode).toBe(200);
+			return getCollection('items');
+		}).then(function (items) {
+			expect(items.length).toEqual(1);
+			expect(items[0].title).toEqual('updated title');
+			expect(items[0].body).toEqual('updated body');
+			expect(items[0].tags).toEqual(['new tag']);
+
+			done();
+		}).fail(done);
+	});
+
 	function getCollection(name) {
 		var deferred = Q.defer();
 

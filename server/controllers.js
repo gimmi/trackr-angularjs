@@ -45,17 +45,26 @@ exports.postItem = function (req, res) {
 
 exports.putItem = function (req, res) {
 	var id = req.param('id'),
-		newItem = req.body,
-		item = findItem(id);
+		newItem = req.body;
 
-	if (item) {
-		item.title = newItem.title;
-		item.tags = newItem.tags;
-		item.body = newItem.body;
-		res.send(200);
-	} else {
-		res.send(404);
-	}
+	models.Item.findById(id, function (err, item) {
+		if (err) {
+			res.send(500, err);
+		} else if (item) {
+			item.title = newItem.title;
+			item.tags = newItem.tags;
+			item.body = newItem.body;
+			item.save(function (err, item) {
+				if (err) {
+					res.send(500, err);
+				} else {
+					res.send(200);
+				}
+			});
+		} else {
+			res.send(404);
+		}
+	});
 };
 
 exports.getComments = function (req, res) {
