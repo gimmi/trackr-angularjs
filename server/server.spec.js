@@ -52,6 +52,17 @@ describe('server', function () {
 		}).fail(done);
 	});
 
+	it('should create new item', function (done) {
+		request({port: 8090, method: 'POST', path: '/api/items'}).then(function (ret) {
+			expect(ret.statusCode).toBe(201);
+			return getCollection('items');
+		}).then(function (items) {
+			expect(items.length).toBe(1);
+
+			done();
+		}).fail(done);
+	});
+
 	function getCollection(name) {
 		var deferred = Q.defer();
 

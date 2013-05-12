@@ -33,15 +33,14 @@ exports.getItem = function (req, res) {
 };
 
 exports.postItem = function (req, res) {
-	var item = req.body;
-
-	item.id = Math.random().toString(36).substring(2);
-	item.comments = [];
-
-	items.push(item);
-
-	res.location('/api/items/' + item.id);
-	res.send(201);
+	new models.Item(req.body).save(function (err, item) {
+		if (err) {
+			res.send(500, err);
+		} else {
+			res.location('/api/items/' + item.id);
+			res.send(201);
+		}
+	});
 };
 
 exports.putItem = function (req, res) {
