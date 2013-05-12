@@ -1,6 +1,7 @@
 "use strict";
 
-var models = require('./models');
+var mongoose = require('mongoose'),
+	models = require('./models');
 
 var items = JSON.parse(require('fs').readFileSync(__dirname + '/../items.json', { encoding: 'utf8' }));
 var findItem = function (id) {
@@ -18,14 +19,17 @@ exports.getItems = function (req, res) {
 };
 
 exports.getItem = function (req, res) {
-	var id = req.param('id'),
-		item = findItem(id);
+	var id = req.param('id');
 
-	if (item) {
-		res.json(item);
-	} else {
-		res.send(404);
-	}
+	models.Item.findById(id, function (err, item) {
+		if (err) {
+			res.send(500, err);
+		} else if (item) {
+			res.json(item);
+		} else {
+			res.send(404);
+		}
+	});
 };
 
 exports.postItem = function (req, res) {

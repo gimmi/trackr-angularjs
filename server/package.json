@@ -8,9 +8,10 @@
     "mongoose": "3.x"
   },
   "devDependencies": {
-    "jasmine-node": "1.x"
+    "jasmine-node": "1.x",
+    "q": "0.x"
   },
   "scripts": {
-    "test": "node node_modules/jasmine-node/lib/jasmine-node/cli.js ."
+    "test": "node node_modules/jasmine-node/lib/jasmine-node/cli.js .",
   }
 }
