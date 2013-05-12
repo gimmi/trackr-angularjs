@@ -55,6 +55,7 @@ describe('server', function () {
 	it('should create new item', function (done) {
 		request({ method: 'POST', path: '/api/items' }, { title: 'title 1', body: 'body 1', tags: ['tag1'] }).then(function (ret) {
 			expect(ret.statusCode).toBe(201);
+			expect(ret.headers['location']).toMatch(/^\/api\/items\/[0-9a-f]{24}$/);
 			return getCollection('items');
 		}).then(function (items) {
 			expect(items.length).toEqual(1);
@@ -184,7 +185,11 @@ describe('server', function () {
 						return;
 					}
 				}
-				deferred.resolve({statusCode: res.statusCode, data: resData});
+				deferred.resolve({
+					statusCode: res.statusCode, 
+					headers: res.headers,
+					data: resData
+				});
 			});
 		});
 
