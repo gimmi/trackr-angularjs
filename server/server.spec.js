@@ -30,7 +30,7 @@ describe('server', function () {
 
 	it('should get all items', function (done) {
 		addToCollection('items', { _id: '518e5b6d96661c4008000002', title: 'title 1', body: 'body 1', tags: ['tag1'] }).then(function () {
-			return request('http://localhost:8090/api/items');
+			return request({ path: '/api/items' });
 		}).then(function (ret) {
 			expect(ret.statusCode).toBe(200);
 			expect(ret.data).toEqual(jasmine.any(Array));
@@ -43,7 +43,7 @@ describe('server', function () {
 
 	it('should get single item', function (done) {
 		addToCollection('items', { _id: '518e5b6d96661c4008000002', title: 'title 1', body: 'body 1', tags: ['tag1'] }).then(function () {
-			return request('http://localhost:8090/api/items/518e5b6d96661c4008000002');
+			return request({ path: '/api/items/518e5b6d96661c4008000002' });
 		}).then(function (ret) {
 			expect(ret.statusCode).toBe(200);
 			expect(ret.data).toEqual({ _id: '518e5b6d96661c4008000002', title: 'title 1', body: 'body 1', tags: ['tag1'] });
@@ -53,11 +53,14 @@ describe('server', function () {
 	});
 
 	it('should create new item', function (done) {
-		request({port: 8090, method: 'POST', path: '/api/items'}).then(function (ret) {
+		request({ method: 'POST', path: '/api/items' }, { title: 'title 1', body: 'body 1', tags: ['tag1'] }).then(function (ret) {
 			expect(ret.statusCode).toBe(201);
 			return getCollection('items');
 		}).then(function (items) {
-			expect(items.length).toBe(1);
+			expect(items.length).toEqual(1);
+			expect(items[0].title).toEqual('title 1');
+			expect(items[0].body).toEqual('body 1');
+			expect(items[0].tags).toEqual(['tag1']);
 
 			done();
 		}).fail(done);
@@ -109,30 +112,41 @@ describe('server', function () {
 		return deferred.promise;
 	}
 
-	function request(options) {
+	function request(options, reqData) {
 		var deferred = Q.defer();
 
-		http.request(options, function (res) {
+		options.port = 8090;
+		if (reqData) {
+			options.headers = {'content-type': 'application/json'};
+		}
+
+		var req = http.request(options, function (res) {
 			var contentType = res.headers['content-type'].split(';')[0],
-				data = '';
+				resData = '';
 
 			res.setEncoding('utf8');
 			res.on('data', function (chunk) {
-				data += chunk;
+				resData += chunk;
 			});
 
 			res.on('end', function() {
 				if (contentType == 'application/json') {
 					try {
-						data = JSON.parse(data);
+						resData = JSON.parse(resData);
 					} catch (e) {
 						deferred.reject(err);
 						return;
 					}
 				}
-				deferred.resolve({statusCode: res.statusCode, data: data});
+				deferred.resolve({statusCode: res.statusCode, data: resData});
 			});
-		}).end();
+		});
+
+		if (reqData) {
+			req.write(JSON.stringify(reqData));
+		}
+
+		req.end();
 
 		return deferred.promise;
 	}
