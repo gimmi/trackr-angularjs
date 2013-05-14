@@ -35,7 +35,7 @@ describe('server', function () {
 			expect(ret.statusCode).toBe(200);
 			expect(ret.data).toEqual(jasmine.any(Array));
 			expect(ret.data.length).toEqual(1);
-			expect(ret.data[0]).toEqual({ _id: '518e5b6d96661c4008000002', title: 'title 1', body: 'body 1', tags: ['tag1'] });
+			expect(ret.data[0]).toEqual({ id: '518e5b6d96661c4008000002', title: 'title 1', body: 'body 1', tags: ['tag1'] });
 
 			done();
 		}).fail(done);
@@ -46,7 +46,7 @@ describe('server', function () {
 			return request({ path: '/api/items/518e5b6d96661c4008000002' });
 		}).then(function (ret) {
 			expect(ret.statusCode).toBe(200);
-			expect(ret.data).toEqual({ _id: '518e5b6d96661c4008000002', title: 'title 1', body: 'body 1', tags: ['tag1'] });
+			expect(ret.data).toEqual({ id: '518e5b6d96661c4008000002', title: 'title 1', body: 'body 1', tags: ['tag1'] });
 
 			done();
 		}).fail(done);
