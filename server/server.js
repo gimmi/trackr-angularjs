@@ -15,6 +15,7 @@ app.post('/api/items', ctrls.postItem);
 app.put('/api/items/:id', ctrls.putItem);
 app.get('/api/items/:id/comments', ctrls.getComments);
 app.post('/api/items/:id/comments', ctrls.postComment);
+app.get('/api/items/:itemId/comments/:commentId', ctrls.getComment);
 
 if (!module.parent) {
 	mongoose.connect('mongodb://localhost/trackr');

@@ -113,6 +113,17 @@ describe('server', function () {
 		}).fail(done);
 	});
 
+	it('should get single comment', function (done) {
+		addToCollection('comments', { _id: '518e5b6d96661c4008000003', item: mongoose.Types.ObjectId('518e5b6d96661c4008000002'), body: 'comment body', timestamp: new Date('2013-06-16T22:00:00.000Z') }).then(function () {
+			return request({ path: '/api/items/518e5b6d96661c4008000002/comments/518e5b6d96661c4008000003' });
+		}).then(function (ret) {
+			expect(ret.statusCode).toBe(200);
+			expect(ret.data).toEqual({ item : '518e5b6d96661c4008000002', body : 'comment body', id : '518e5b6d96661c4008000003', timestamp: '2013-06-16T22:00:00.000Z' });
+
+			done();
+		}).fail(done);
+	});
+
 	function getCollection(name) {
 		var deferred = Q.defer();
 

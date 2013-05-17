@@ -82,6 +82,22 @@ exports.getComments = function (req, res) {
 	});
 };
 
+exports.getComment = function (req, res) {
+	var itemId = req.param('itemId'),
+		commentId = req.param('commentId');
+
+	models.Comment.findOne({ _id: commentId, item: itemId }, function (err, comment) {
+		if (err) {
+			res.send(500, err);
+		} else if (comment) {
+			res.json(comment);
+		} else {
+			res.send(404);
+		}
+	});
+};
+
+
 exports.postComment = function (req, res) {
 	var id = req.param('id');
 
