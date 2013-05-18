@@ -73,20 +73,11 @@ angular.module('app').factory('appServerSvc', ['$q', '$http', function (q, http)
 		},
 
 		findTags: function () {
-			return itemsPromise.then(function (items) {
-				return _(items).chain()
-					.map(function (x) { return angular.copy(x.tags); })
-					.flatten()
-					.compact()
-					.uniq()
-					.value();
-			});
-		},
-
-		_findItem: function (id) {
-			return itemsPromise.then(function (items) {
-				var item = _(items).find(function (item) { return item.id === id; });
-				return item || q.reject('item #' + id + ' not found');
+			return http.get('/api/tags').then(function (ret) {
+				if (ret.status !== 200) {
+					throw new Error('HTTP ' + ret.status);
+				}
+				return ret.data;
 			});
 		}
 	};
