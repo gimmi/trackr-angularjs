@@ -109,6 +109,8 @@ describe('server', function () {
 		}).then(function (comments) {
 			expect(comments.length).toEqual(1);
 			expect(comments[0].body).toEqual('comment body');
+			expect(comments[0].timestamp).toEqual(jasmine.any(Date));
+			expect(comments[0].itemId).toEqual(mongoose.Types.ObjectId('518e5b6d96661c4008000002'));
 
 			done();
 		}).fail(done);
