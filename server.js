@@ -7,7 +7,7 @@ var app = module.exports = express();
 
 app.use(express.bodyParser());
 app.use(app.router);
-app.use(express.static(__dirname + '/../client'));
+app.use(express.static(__dirname + '/public'));
 
 app.get('/api/items', ctrls.getItems);
 app.get('/api/items/:id', ctrls.getItem);

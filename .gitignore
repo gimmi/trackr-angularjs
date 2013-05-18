@@ -1,2 +1,2 @@
 *.sublime-workspace
-/server/node_modules/
+node_modules/

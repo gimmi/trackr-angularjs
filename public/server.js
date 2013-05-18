@@ -1,10 +1,6 @@
 'use strict';
 
 angular.module('app').factory('appServerSvc', ['$q', '$http', function (q, http) {
-	var itemsPromise = http.get('items.json').then(function (resp) {
-			return (resp.status === 200 ? resp.data : q.reject('HTTP ' + resp.status));
-		});
-
 	return {
 		findItems: function (query) {
 			return http.get('/api/items').then(function(ret) {
