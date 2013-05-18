@@ -85,7 +85,7 @@ describe('server', function () {
 
 	it('should get comments', function (done) {
 		addToCollection('items', { _id: '518e5b6d96661c4008000002', title: 'title', body: 'body', tags: [] }).then(function () {
-			return addToCollection('comments', { item: mongoose.Types.ObjectId('518e5b6d96661c4008000002'), body: 'comment body' });
+			return addToCollection('comments', { itemId: mongoose.Types.ObjectId('518e5b6d96661c4008000002'), body: 'comment body' });
 		}).then(function () {
 			return request({ path: '/api/items/518e5b6d96661c4008000002/comments' });
 		}).then(function (ret) {
@@ -115,11 +115,11 @@ describe('server', function () {
 	});
 
 	it('should get single comment', function (done) {
-		addToCollection('comments', { _id: '518e5b6d96661c4008000003', item: mongoose.Types.ObjectId('518e5b6d96661c4008000002'), body: 'comment body', timestamp: new Date('2013-06-16T22:00:00.000Z') }).then(function () {
+		addToCollection('comments', { _id: '518e5b6d96661c4008000003', itemId: mongoose.Types.ObjectId('518e5b6d96661c4008000002'), body: 'comment body', timestamp: new Date('2013-06-16T22:00:00.000Z') }).then(function () {
 			return request({ path: '/api/items/518e5b6d96661c4008000002/comments/518e5b6d96661c4008000003' });
 		}).then(function (ret) {
 			expect(ret.statusCode).toBe(200);
-			expect(ret.data).toEqual({ item : '518e5b6d96661c4008000002', body : 'comment body', id : '518e5b6d96661c4008000003', timestamp: '2013-06-16T22:00:00.000Z' });
+			expect(ret.data).toEqual({ id: '518e5b6d96661c4008000003', itemId: '518e5b6d96661c4008000002', body: 'comment body', timestamp: '2013-06-16T22:00:00.000Z' });
 
 			done();
 		}).fail(done);

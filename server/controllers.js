@@ -69,7 +69,7 @@ exports.getComments = function (req, res) {
 		if (err) {
 			res.send(500, err);
 		} else if (item) {
-			models.Comment.find({ item: item._id }, function (err, comments) {
+			models.Comment.find({ itemId: item.id }, function (err, comments) {
 				if (err) {
 					res.json(500, err);
 				} else {
@@ -86,7 +86,7 @@ exports.getComment = function (req, res) {
 	var itemId = req.param('itemId'),
 		commentId = req.param('commentId');
 
-	models.Comment.findOne({ _id: commentId, item: itemId }, function (err, comment) {
+	models.Comment.findOne({ _id: commentId, itemId: itemId }, function (err, comment) {
 		if (err) {
 			res.send(500, err);
 		} else if (comment) {
@@ -105,7 +105,9 @@ exports.postComment = function (req, res) {
 		if (err) {
 			res.send(500, err);
 		} else if (item) {
-			new models.Comment(req.body).save(function (err, comment) {
+			var comment = new models.Comment(req.body);
+			comment.timestamp = new Date();
+			comment.save(function (err, comment) {
 				if (err) {
 					res.send(500, err);
 				} else {

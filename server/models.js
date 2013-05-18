@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+	ObjectId = require('mongoose').Schema.Types.ObjectId;
 
 var options = { 
 	toJSON: { 
@@ -18,7 +19,7 @@ var itemSchema = mongoose.Schema({
 exports.Item = mongoose.model('Item', itemSchema);
 
 var commentSchema = mongoose.Schema({
-	item: { type: mongoose.Schema.Types.ObjectId, ref: 'Item' },
+	itemId: ObjectId,
 	timestamp: Date,
 	body: String
 }, options);
