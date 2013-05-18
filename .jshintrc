@@ -1,9 +1,0 @@
-{
-	"globalstrict": true,
-	"globals": { 
-		"angular": false,
-		"_": false,
-		"$": false,
-		"Showdown": false
-	}
-}

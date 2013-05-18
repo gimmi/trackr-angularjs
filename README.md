@@ -1,2 +1,1 @@
-npm install
-npm test
+# PROJECT MOVED [HERE](https://github.com/gimmi/trackr)
