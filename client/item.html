@@ -8,13 +8,13 @@
 <div class="media" ng-repeat="comment in model.comments">
 	<img class="pull-left media-object" src="http://www.gravatar.com/avatar/9a2d1bc06c719550eb756b8cc32baa37?s=64">
 	<p class="media-heading muted">{{comment.timestamp | date:'short'}}</p>
-	<div class="media-body" app-markdown-renderer="comment.text"></div>
+	<div class="media-body" app-markdown-renderer="comment.body"></div>
 </div>
 <div class="media">
 	<img class="pull-left media-object" src="http://www.gravatar.com/avatar/9a2d1bc06c719550eb756b8cc32baa37?s=64">
 	<div class="media-body">
 		<form ng-submit="addComment()">
-			<div app-markdown-editor="newCommentText"></div>
+			<div app-markdown-editor="newCommentBody"></div>
 			<div class="form-actions">
 				<button type="submit" class="btn btn-primary">Comment</button>
 			</div>

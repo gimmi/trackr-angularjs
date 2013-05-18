@@ -60,21 +60,24 @@ angular.module('app').controller('appItemCtrl', ['$scope', 'appServerSvc', '$rou
 	var id = routeParams.id,
 		handleError = function (error) { appFlashSvc.redirect('/', 'Error wile working with item #' + id + '. ' + error); };
 
-	scope.newCommentText = '';
+	scope.newCommentBody = '';
 
 	scope.edit = function () {
 		appFlashSvc.redirect('/items/' + id + '/edit');
 	};
 
 	scope.addComment = function () {
-		appServerSvc.createComment(id, scope.newCommentText).then(function (comment) {
+		appServerSvc.createComment(id, scope.newCommentBody).then(function (comment) {
 			scope.model.comments.push(comment);
-			scope.newCommentText = '';
+			scope.newCommentBody = '';
 		}, handleError);
 	};
 
 	appServerSvc.getItem(id).then(function (item) {
 		_(scope.model).extend(item);
+		return appServerSvc.getComments(id);
+	}).then(function (comments) {
+		scope.model.comments = comments;
 	}, handleError);
 }]);
 

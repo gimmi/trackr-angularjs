@@ -31,7 +31,7 @@ angular.module('app').factory('appServerSvc', ['$q', '$http', function (q, http)
 		},
 
 		updateItem: function (item) {
-			return http.put('/api/items/' + item._id, item).then(function (ret) {
+			return http.put('/api/items/' + item.id, item).then(function (ret) {
 				if (ret.status !== 200) {
 					throw new Error('HTTP ' + ret.status);
 				}
@@ -48,15 +48,27 @@ angular.module('app').factory('appServerSvc', ['$q', '$http', function (q, http)
 			});
 		},
 
-		createComment: function (itemId, text) {
-			text = angular.copy(text);
-			return this._findItem(itemId).then(function (item) {
-				var comment = { 
-					text: text, 
-					timestamp: new Date().toISOString()
-				};
-				item.comments.push(comment);
-				return angular.copy(comment);
+		getComments: function (itemId) {
+			return http.get('/api/items/' + itemId + '/comments').then(function (ret) {
+				if (ret.status !== 200) {
+					throw new Error('HTTP ' + ret.status);
+				}
+				return ret.data;
+			});
+		},
+
+		createComment: function (itemId, body) {
+			return http.post('/api/items/' + itemId + '/comments', { body: body }).then(function(ret) {
+				if (ret.status !== 201) {
+					throw new Error('HTTP ' + ret.status);
+				}
+				var headers = ret.headers();
+				return http.get(headers.location);
+			}).then(function (ret) {
+				if (ret.status !== 200) {
+					throw new Error('HTTP ' + ret.status);
+				}
+				return ret.data;
 			});
 		},
 
