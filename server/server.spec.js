@@ -127,6 +127,17 @@ describe('server', function () {
 		}).fail(done);
 	});
 
+	it('should get tags', function (done) {
+		addToCollection('items', [{ tags: ['1', '2'] }, { tags: ['3', '4'] }, { tags: ['1', '3'] }]).then(function () {
+			return request({ path: '/api/tags' });
+		}).then(function (ret) {
+			expect(ret.statusCode).toBe(200);
+			expect(ret.data).toEqual(['3', '1', '4', '2']);
+
+			done();
+		}).fail(done);
+	});
+
 	function getCollection(name) {
 		var deferred = Q.defer();
 

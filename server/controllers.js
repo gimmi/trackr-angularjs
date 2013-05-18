@@ -121,3 +121,20 @@ exports.postComment = function (req, res) {
 		}
 	});
 };
+
+exports.getTags = function (req, res) {
+	models.Item.aggregate(
+		{ $project: { _id: 0, tags: 1 } },
+		{ $unwind: '$tags' },
+		{ $group: { _id: '$tags', count: { $sum: 1 } } },
+		{ $sort: { count: -1 } },
+		{ $limit: 10 },
+		function (err, tags) {
+			if (err) {
+				res.send(500, err);
+			} else {
+				tags.forEach(function (tag, index, tags) { tags[index] = tag._id; });
+				res.json(tags);
+			}
+		});
+};
