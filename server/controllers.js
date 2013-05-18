@@ -105,10 +105,11 @@ exports.postComment = function (req, res) {
 		if (err) {
 			res.send(500, err);
 		} else if (item) {
-			new models.Comment(req.body).save(function (err, item) {
+			new models.Comment(req.body).save(function (err, comment) {
 				if (err) {
 					res.send(500, err);
 				} else {
+					res.location('/api/items/' + item.id + '/comments/' + comment.id);
 					res.send(201);
 				}
 			});

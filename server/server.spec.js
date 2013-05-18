@@ -103,6 +103,7 @@ describe('server', function () {
 			return request({ method: 'POST', path: '/api/items/518e5b6d96661c4008000002/comments' }, { body: 'comment body' });
 		}).then(function (ret) {
 			expect(ret.statusCode).toBe(201);
+			expect(ret.headers['location']).toMatch(/^\/api\/items\/518e5b6d96661c4008000002\/comments\/[0-9a-f]{24}$/);
 
 			return getCollection('comments');
 		}).then(function (comments) {
