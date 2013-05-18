@@ -99,19 +99,20 @@ exports.getComment = function (req, res) {
 
 
 exports.postComment = function (req, res) {
-	var id = req.param('id');
+	var itemId = req.param('id');
 
-	models.Item.findById(id, function (err, item) {
+	models.Item.findById(itemId, function (err, item) {
 		if (err) {
 			res.send(500, err);
 		} else if (item) {
 			var comment = new models.Comment(req.body);
 			comment.timestamp = new Date();
+			comment.itemId = item.id;
 			comment.save(function (err, comment) {
 				if (err) {
 					res.send(500, err);
 				} else {
-					res.location('/api/items/' + item.id + '/comments/' + comment.id);
+					res.location('/api/items/' + comment.itemId + '/comments/' + comment.id);
 					res.send(201);
 				}
 			});
