@@ -106,8 +106,8 @@ angular.module('app').directive('appTagsEditor', ['$sniffer', 'appServerSvc', fu
 		var getTags = function (text) { 
 			return (text || '').match(/[^ ]+/g) || []; 
 		};
-		var getLastWord = function (tags) { 
-			return getTags().pop() || '';
+		var getLastWord = function (tags) {
+			return getTags(tags).pop() || '';
 		};
 
 		element.typeahead({
